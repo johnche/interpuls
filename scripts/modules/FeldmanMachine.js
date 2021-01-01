@@ -26,13 +26,12 @@ export default class FeldmanMachine {
 				finishTimestamp: null
 			},
 			recordedTimestamp: Date.now(),
-			lastFinishTimestamp: null // fill this out when audio finishes playing
 		};
 	}
 
 	updateTimestamp = () => this.state.recordedTimestamp = Date.now();
 
-	getDirectory = (category) => {
+	getDir = (category) => {
 		const index = this.state[category].directoryIndex;
 		return this.state[category].directoryList[index];
 	}
@@ -41,7 +40,7 @@ export default class FeldmanMachine {
 
 	getCurrentTrackPath = () =>  {
 		const category = this.state.current.category;
-		return `./assets/audio/${category}/${this.getDirectory(category)}/${this.getTrack(category)}.ogg`
+		return `./assets/audio/${category}/${this.getDir(category)}/${this.getTrack(category)}.ogg`
 	}
 
 	setCategory = (newCategory) => {
@@ -63,7 +62,7 @@ export default class FeldmanMachine {
 	incTrack = (category) => this.state[category].track++;
 
 	updateTrack = (category) => {
-		const currentDir = this.getDirectory(category);
+		const currentDir = this.getDir(category);
 		const currentTrack = this.getTrack(category);
 
 		this.mediaHelper.isTrackOverflow(category, currentDir, currentTrack)
@@ -74,7 +73,7 @@ export default class FeldmanMachine {
 	updateDirectory = (category) => {
 		this.resetTrack(category);
 
-		this.mediaHelper.isDirOverflow(category, this.getDirectory(category))
+		this.mediaHelper.isDirOverflow(category, this.getDir(category))
 			? this.resetDirectory(category)
 			: this.incDirectory(category);
 	};
@@ -105,7 +104,7 @@ export default class FeldmanMachine {
 	};
 
 	feldmanMedium = (delta, silenceDuration) => {
-		if (silenceDuration < 0.75 || delta < 0.25*this.state.current.howlerTrack.duration()) {
+		if (silenceDuration < 750 || delta < 0.25*this.state.current.howlerTrack.duration()) {
 			this.setCategory('short');
 		}
 		else {
@@ -114,7 +113,7 @@ export default class FeldmanMachine {
 	};
 
 	feldmanShort = (delta, silenceDuration) => {
-		if (silenceDuration < 0.5 || delta < 0.25*this.state.current.howlerTrack.duration()) {
+		if (silenceDuration < 500 || delta < 0.25*this.state.current.howlerTrack.duration()) {
 			this.setCategory('aggro');
 		}
 		else if (silenceDuration > 2) {
@@ -126,10 +125,10 @@ export default class FeldmanMachine {
 	};
 
 	feldmanAggro = (silenceDuration) => {
-		if (silenceDuration > 1 && silenceDuration <= 2) {
+		if (silenceDuration > 1000 && silenceDuration <= 2000) {
 			this.setCategory('short');
 		}
-		else if (silenceDuration > 2) {
+		else if (silenceDuration > 2000) {
 			this.setCategory('medium');
 		}
 		else {

@@ -1,5 +1,5 @@
 import '../lib/howler/dist/howler.js';
-import { range, shuffleArray } from './utils.js';
+import { sleep, range, shuffleArray } from './utils.js';
 
 export default class FeldmanMachine {
 	constructor(mediaHelper) {
@@ -79,12 +79,24 @@ export default class FeldmanMachine {
 			: this.incDirectory(category);
 	};
 
+	stopTrack = async (howlerTrack) => {
+		howlerTrack.fade(1, 0, 200);
+		await sleep(200);
+		howlerTrack.stop();
+	}
+
 	// Time duration, finishTimestamp
 	playSound = () => {
-		//this.state.current.howlerTrack.fade(1, 0, 200);
+		if (this.state.current.howlerTrack?.playing ?? false) {
+			this.stopTrack(this.state.current.howlerTrack);
+		}
 
 		const sound = new Howl({
-			src: [this.getCurrentTrackPath()]
+			src: [this.getCurrentTrackPath()],
+			onend: () => {
+				this.state.current.finishTimestamp = Date.now();
+				console.log('onend', this.state);
+			}
 		});
 		sound.play();
 		

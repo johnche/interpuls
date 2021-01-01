@@ -90,6 +90,9 @@ export default class FeldmanMachine {
 			this.stopTrack(this.state.current.howlerTrack);
 		}
 
+		// debug
+		const category = this.state.current.category;
+		console.log('playing', category, this.getDir(category), this.getTrack(category));
 		const sound = new Howl({
 			src: [this.getCurrentTrackPath()],
 			onend: () => {
@@ -158,5 +161,6 @@ export default class FeldmanMachine {
 
 		this.updateTimestamp();
 		this.playSound();
+		console.log('end of click', this.state);
 	};
 }

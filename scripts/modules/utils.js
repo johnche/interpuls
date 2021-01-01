@@ -23,8 +23,8 @@ export const waitForClick = (htmlElement) => {
 // 	- start >= 0
 // 	- array includes end
 // range(4) -> [1, 2, 3, 4]
-export const range(end) {
-	return [...Array(end).keys()].slice(1);
+export const range = (end) => {
+	return [...Array(end + 1).keys()].slice(1);
 };
 
 // Fisher-Yates shuffle
@@ -33,8 +33,8 @@ export const shuffleArray = (l) => {
 	for (let i = arrayCopy.length - 1; i > 0; i--) {
 		const j = Math.floor(Math.random() * i);
 		const temp = arrayCopy[i];
-		array[i] = array[j];
-		array[j] = temp;
+		arrayCopy[i] = arrayCopy[j];
+		arrayCopy[j] = temp;
 	}
 
 	return arrayCopy;

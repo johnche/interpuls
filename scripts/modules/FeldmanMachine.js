@@ -22,7 +22,8 @@ export default class FeldmanMachine {
 			},
 			current: {
 				category: 'medium',
-				howlerTrack: null
+				howlerTrack: null,
+				finishTimestamp: null
 			},
 			recordedTimestamp: Date.now(),
 		};
@@ -92,14 +93,21 @@ export default class FeldmanMachine {
 		// debug
 		const category = this.state.current.category;
 		console.log('playing', category, this.getDir(category), this.getTrack(category));
-		const sound = new Howl({ src: [this.getCurrentTrackPath()] });
+		const sound = new Howl({
+			src: [this.getCurrentTrackPath()],
+			onend: () => {
+				this.state.current.finishTimestamp = Date.now();
+				console.log('onend', this.state);
+			}
+		});
 		sound.play();
 		
 		this.state.current.howlerTrack = sound;
+		this.state.current.finishTimestamp = null;
 	};
 
-	feldmanMedium = (delta, currentTrack) => {
-		if (currentTrack && delta < 0.25*currentTrack.duration()) {
+	feldmanMedium = (delta, silenceDuration) => {
+		if (silenceDuration < 750 || delta < 0.25*this.state.current.howlerTrack.duration()) {
 			this.setCategory('short');
 		}
 		else {
@@ -107,8 +115,8 @@ export default class FeldmanMachine {
 		}
 	};
 
-	feldmanShort = (delta, currentTrack) => {
-		if (currentTrack && delta < 0.25*currentTrack.duration()) {
+	feldmanShort = (delta, silenceDuration) => {
+		if (silenceDuration < 500 || delta < 0.25*this.state.current.howlerTrack.duration()) {
 			this.setCategory('aggro');
 		}
 		else if (silenceDuration > 2) {
@@ -135,14 +143,16 @@ export default class FeldmanMachine {
 	click = () => {
 		const now = Date.now();
 		const delta = now - this.state.recordedTimestamp;
-		const currentTrack = this.state.current.howlerTrack
+		const silenceDuration = this.state.current.finishTimestamp
+			? now - this.state.current.finishTimestamp
+			: 0;
 
 		switch (this.state.current.category) {
 			case 'medium':
-				this.feldmanMedium(delta, currentTrack);
+				this.feldmanMedium(delta, silenceDuration);
 				break;
 			case 'short':
-				this.feldmanShort(delta, currentTrack);
+				this.feldmanShort(delta, silenceDuration);
 				break;
 			case 'aggro':
 				this.feldmanAggro(silenceDuration);

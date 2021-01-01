@@ -107,7 +107,7 @@ export default class FeldmanMachine {
 	};
 
 	feldmanMedium = (delta, currentTrack) => {
-		if (currentTrack && delta < 0.25*this.state.current.howlerTrack.duration()) {
+		if (currentTrack && delta < 0.25*currentTrack.duration()) {
 			this.setCategory('short');
 		}
 		else {
@@ -116,7 +116,7 @@ export default class FeldmanMachine {
 	};
 
 	feldmanShort = (delta, currentTrack) => {
-		if (currentTrack && delta < 0.25*this.state.current.howlerTrack.duration()) {
+		if (currentTrack && delta < 0.25*currentTrack.duration()) {
 			this.setCategory('aggro');
 		}
 		else if (silenceDuration > 2) {
@@ -143,7 +143,7 @@ export default class FeldmanMachine {
 	click = () => {
 		const now = Date.now();
 		const delta = now - this.state.recordedTimestamp;
-		const currentTrack = this.state.current.howlerTrack
+		const currentTrack = this.state.current.howlerTrack;
 		const silenceDuration = this.state.current.finishTimestamp
 			? now - this.state.current.finishTimestamp
 			: 0;

@@ -107,7 +107,7 @@ export default class FeldmanMachine {
 	};
 
 	feldmanMedium = (delta, currentTrack) => {
-		if (currentTrack && delta < 0.25*currentTrack.duration()) {
+		if (currentTrack && delta < (0.10*currentTrack.duration()*1000)) {
 			this.setCategory('short');
 		}
 		else {
@@ -115,11 +115,11 @@ export default class FeldmanMachine {
 		}
 	};
 
-	feldmanShort = (delta, currentTrack) => {
-		if (currentTrack && delta < 0.25*currentTrack.duration()) {
+	feldmanShort = (delta, currentTrack, silenceDuration) => {
+		if (currentTrack && delta < (0.10*currentTrack.duration()*1000)) {
 			this.setCategory('aggro');
 		}
-		else if (silenceDuration > 2) {
+		else if (silenceDuration > 2000) {
 			this.setCategory('medium');
 		}
 		else {

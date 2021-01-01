@@ -6,23 +6,22 @@ function getNumFiles($directoryPath) {
 }
 
 function getMediaMapping($mediaRoot) {
-	$media_overview = [];
+	$mediaOverview = [];
 
 	foreach(new DirectoryIterator($mediaRoot) as $categoryDir) {
 		if (!$categoryDir->isDot()) {
 
 			$subCategoryCounts = [];
-			foreach(new DirectoryIterator($categoryDir->getPathname()) as $subCategoryDir) {
-				if (!$subCategoryDir->isDot()) {
-					array_push($subCategoryCounts, getNumFiles($subCategoryDir->getPathname()));
-				}
+			foreach(range(1, getNumFiles($categoryDir->getPathname())) as $subCategoryDir) {
+				$dirPath = $categoryDir->getPathname() . "/" . $subCategoryDir;
+				array_push($subCategoryCounts, getNumFiles($dirPath));
 			}
 
-			$media_overview[$categoryDir->getFilename()] = $subCategoryCounts;
+			$mediaOverview[$categoryDir->getFilename()] = $subCategoryCounts;
 		}
 	}
 
-	return $media_overview;
+	return $mediaOverview;
 }
 
 
@@ -32,8 +31,5 @@ header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET');
 echo json_encode($mapping);
-//var_dump($mapping);
-//print_r($mapping);
-//debug_zval_dump($mapping);
-//get_defined_vars($mapping);
+
 ?>

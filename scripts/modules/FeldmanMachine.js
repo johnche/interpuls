@@ -27,9 +27,16 @@ export default class FeldmanMachine {
 			},
 			recordedTimestamp: Date.now(),
 		};
+
+		// Howler creates AudioContext after sound is played
+		this.playSound();
+		this._analyser = Howler.ctx.createAnalyser();
+		Howler.masterGain.connect(this._analyser);
 	}
 
 	updateTimestamp = () => this.state.recordedTimestamp = Date.now();
+
+	getAnalyser = () => this._analyser;
 
 	getDir = (category) => {
 		const index = this.state[category].directoryIndex;

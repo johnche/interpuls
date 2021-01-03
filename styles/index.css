@@ -4,3 +4,11 @@ body {
 	width: 100vw;
 	overflow: hidden;
 }
+
+.center {
+	background-color: papayawhip;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}

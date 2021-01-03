@@ -27,6 +27,14 @@ export default class Visualizer {
 	render = () => {
 		this.clear();
 
+		const dotColor = `rgb(${this.frequencyBuffer[0]}, ${this.frequencyBuffer[0]}, ${this.frequencyBuffer[0]})`;
+		this.ctx.beginPath();
+		this.ctx.arc(this.centerX, this.centerY, this.samplesBuffer[0], 0, 2 * Math.PI);
+		this.ctx.fillStyle = dotColor;
+		this.ctx.strokeStyle = dotColor;
+		this.ctx.fill();
+		this.ctx.stroke();
+
 		this.samplesBuffer.forEach((value, i) => {
 			this.ctx.beginPath();
 			this.ctx.moveTo(i, 0);

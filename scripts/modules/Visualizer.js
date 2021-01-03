@@ -11,6 +11,7 @@ export default class Visualizer {
 		this.centerX = this.canvas.width/2;
 		this.centerY = this.canvas.height/2;
 		this.space = this.canvas.width/this.frequencyBuffer.length;
+		this.space2 = this.canvas.width/this.samplesBuffer.length;
 	}
 
 	visualizerLoop = () => {
@@ -37,8 +38,8 @@ export default class Visualizer {
 
 		this.samplesBuffer.forEach((value, i) => {
 			this.ctx.beginPath();
-			this.ctx.moveTo(i, 0);
-			this.ctx.lineTo(i, value);
+			this.ctx.moveTo(this.space2*i, 0);
+			this.ctx.lineTo(this.space2*i, value);
 			this.ctx.stroke();
 		});
 

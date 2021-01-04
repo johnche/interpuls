@@ -1,6 +1,9 @@
+import { topBars, bottomBars, dot, fadingDot } from "./visualizers.js";
+
 export default class Visualizer {
-	constructor(analyser) {
+	constructor(analyser, sampleRate) {
 		analyser.fftSize = 2048; // this should be default, but just in case...
+		this.sampleRate = sampleRate;
 		this.analyser = analyser;
 		this.animationId = window.requestAnimationFrame(this.visualizerLoop);
 		this.frequencyBuffer = new Uint8Array(analyser.frequencyBinCount);
@@ -28,27 +31,22 @@ export default class Visualizer {
 	render = () => {
 		this.clear();
 
-		const dotColor = `rgb(${this.frequencyBuffer[0]}, ${this.frequencyBuffer[0]}, ${this.frequencyBuffer[0]})`;
-		this.ctx.beginPath();
-		this.ctx.arc(this.centerX, this.centerY, this.samplesBuffer[0], 0, 2 * Math.PI);
-		this.ctx.fillStyle = dotColor;
-		this.ctx.strokeStyle = dotColor;
-		this.ctx.fill();
-		this.ctx.stroke();
-
-		this.samplesBuffer.forEach((value, i) => {
-			this.ctx.beginPath();
-			this.ctx.moveTo(this.space2*i, 0);
-			this.ctx.lineTo(this.space2*i, value);
-			this.ctx.stroke();
-		});
-
-		this.frequencyBuffer.forEach((value, i) => {
-			this.ctx.beginPath();
-			this.ctx.moveTo(this.space*i, this.canvas.height);
-			this.ctx.lineTo(this.space*i, (this.canvas.height - value));
-			this.ctx.stroke();
-		});
+		fadingDot(
+			this.ctx,
+			this.frequencyBuffer,
+			this.analyser.fftSize,
+			this.centerX,
+			this.centerY
+		);
+		//dot(
+		//	this.ctx,
+		//	this.frequencyBuffer,
+		//	this.analyser.fftSize,
+		//	this.centerX,
+		//	this.centerY
+		//);
+		//topBars(this.ctx, this.samplesBuffer, this.space2);
+		//bottomBars(this.canvas, this.ctx, this.frequencyBuffer, this.space);
 	};
 
 	stop = () => cancelAnimationFrame(this.animationId);

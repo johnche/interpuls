@@ -8,7 +8,7 @@ const main = async () => {
 	const mediaHelper = new MediaHelper(mediaData);
 
 	const feldmanMachine = new FeldmanMachine(mediaHelper);
-	const visualizer = new Visualizer(feldmanMachine.getAnalyser());
+	const visualizer = new Visualizer(feldmanMachine.getAnalyser(), 44100);
 
 	document.body.addEventListener('click', feldmanMachine.click, true);
 };

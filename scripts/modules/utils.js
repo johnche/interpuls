@@ -39,3 +39,10 @@ export const shuffleArray = (l) => {
 
 	return arrayCopy;
 };
+
+export const indexOfMax = (l) => {
+	return l.reduce((i_max, val, i, arr) => {
+		//console.log(val);
+		return (val > arr[i_max]) ? i : i_max
+	}, 0);
+};

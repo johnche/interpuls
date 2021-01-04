@@ -18,6 +18,15 @@ export const topBars = (ctx, arr, space) => {
 	});
 };
 
+export const bottomWaves = (canvas, ctx, arr, space) => {
+	arr.forEach((value, i) => {
+		ctx.beginPath();
+		ctx.moveTo(space*i, (canvas.height - value + 1));
+		ctx.lineTo(space*i, (canvas.height - value));
+		ctx.stroke();
+	});
+};
+
 export const dot = (ctx, freqs, fftSize, x, y) => {
 	const amplitude = Math.max(...freqs);
 	const normalizedFrequency = indexOfMax(freqs)/fftSize;

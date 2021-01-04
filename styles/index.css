@@ -6,6 +6,7 @@ body {
 }
 
 .center {
+	background-color: papayawhip;
 	position: absolute;
 	left: 50%;
 	top: 50%;

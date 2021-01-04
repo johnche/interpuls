@@ -7,8 +7,10 @@ const main = async () => {
 	const mediaData = await res.json()
 	const mediaHelper = new MediaHelper(mediaData);
 
-	const feldmanMachine = new FeldmanMachine(mediaHelper);
-	const visualizer = new Visualizer(feldmanMachine.getAnalyser(), 44100);
+	const messenger = { newTrack: false };
+
+	const feldmanMachine = new FeldmanMachine(mediaHelper, messenger);
+	const visualizer = new Visualizer(feldmanMachine.getAnalyser(), 44100, messenger);
 
 	document.body.addEventListener('click', feldmanMachine.click, true);
 };

@@ -1,7 +1,9 @@
-import { topBars, bottomBars, dot, fadingDot } from "./visualizers.js";
+import { topBars, bottomBars, bottomWaves, dot, fadingDot } from "./visualizers.js";
 
 export default class Visualizer {
-	constructor(analyser, sampleRate) {
+	constructor(analyser, sampleRate, messenger) {
+		this.messenger = messenger;
+
 		analyser.fftSize = 2048; // this should be default, but just in case...
 		this.sampleRate = sampleRate;
 		this.analyser = analyser;
@@ -29,15 +31,20 @@ export default class Visualizer {
 	};
 
 	render = () => {
-		this.clear();
+		//this.clear();
+		if (this.messenger.newTrack) {
+			this.ctx.translate(0, -5);
+			//this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+			this.messenger.newTrack = false;
+		}
 
-		fadingDot(
-			this.ctx,
-			this.frequencyBuffer,
-			this.analyser.fftSize,
-			this.centerX,
-			this.centerY
-		);
+		//fadingDot(
+		//	this.ctx,
+		//	this.frequencyBuffer,
+		//	this.analyser.fftSize,
+		//	this.centerX,
+		//	this.centerY
+		//);
 		//dot(
 		//	this.ctx,
 		//	this.frequencyBuffer,
@@ -46,7 +53,8 @@ export default class Visualizer {
 		//	this.centerY
 		//);
 		//topBars(this.ctx, this.samplesBuffer, this.space2);
-		//bottomBars(this.canvas, this.ctx, this.frequencyBuffer, this.space);
+		//bottomBars(this.canvas, this.ctx, this.samplesBuffer, this.space);
+		bottomWaves(this.canvas, this.ctx, this.samplesBuffer, this.space);
 	};
 
 	stop = () => cancelAnimationFrame(this.animationId);

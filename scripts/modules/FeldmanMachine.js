@@ -2,7 +2,8 @@ import '../lib/howler/dist/howler.js';
 import { sleep, range, shuffleArray } from './utils.js';
 
 export default class FeldmanMachine {
-	constructor(mediaHelper) {
+	constructor(mediaHelper, messenger) {
+		this.messenger = messenger;
 		this.mediaHelper = mediaHelper;
 		this.state = {
 			medium: {
@@ -28,6 +29,7 @@ export default class FeldmanMachine {
 			recordedTimestamp: Date.now(),
 		};
 
+		//(new Howl({src: 'assets/phantom.ogg'})).play();
 		// Howler creates AudioContext after sound is played
 		this.playSound();
 		this._analyser = Howler.ctx.createAnalyser();
@@ -93,6 +95,7 @@ export default class FeldmanMachine {
 
 	// Time duration, finishTimestamp
 	playSound = () => {
+		this.messenger.newTrack = true;
 		if (this.state.current.howlerTrack?.playing ?? false) {
 			this.stopTrack(this.state.current.howlerTrack);
 		}

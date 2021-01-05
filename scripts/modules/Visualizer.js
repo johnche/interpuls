@@ -1,4 +1,5 @@
 import { topBars, bottomBars, bottomWaves, dot, fadingDot } from "./visualizers.js";
+import { indexOfMax } from "./utils.js";
 
 export default class Visualizer {
 	constructor(analyser, sampleRate, messenger) {
@@ -54,7 +55,9 @@ export default class Visualizer {
 		//);
 		//topBars(this.ctx, this.samplesBuffer, this.space2);
 		//bottomBars(this.canvas, this.ctx, this.samplesBuffer, this.space);
+		if (indexOfMax(this.frequencyBuffer)>10){
 		bottomWaves(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space);
+		}
 	};
 	stop = () => cancelAnimationFrame(this.animationId);
 }

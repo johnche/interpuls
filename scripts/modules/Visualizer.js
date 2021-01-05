@@ -54,8 +54,7 @@ export default class Visualizer {
 		//);
 		//topBars(this.ctx, this.samplesBuffer, this.space2);
 		//bottomBars(this.canvas, this.ctx, this.samplesBuffer, this.space);
-		bottomWaves(this.canvas, this.ctx, this.samplesBuffer, this.space);
+		bottomWaves(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space);
 	};
-
 	stop = () => cancelAnimationFrame(this.animationId);
 }

@@ -18,11 +18,24 @@ export const topBars = (ctx, arr, space) => {
 	});
 };
 
-export const bottomWaves = (canvas, ctx, arr, space) => {
+export const bottomWaves = (canvas, ctx, freqs, fftSize, arr, space, x, y) => {
+	const amplitude = Math.max(...freqs);
+	const normalizedFrequency = indexOfMax(freqs)/fftSize;
+	const colorAmplitude = Math.round((-1)*(amplitude));
+	const colorL = Math.abs((colorAmplitude)*(50/255)+80).toFixed(2)+'%';
+	const colorS = Math.abs((colorAmplitude)*(70/255)+100).toFixed(2)+'%';
+	// const colorS = ((amplitude)*(90/255)).toFixed(2)+'%';
+	const alpha = (amplitude)*(1/255);
+	
+	console.log(colorS);
+	//const colorL = (Math.round(100*normalizedFrequency)*10).toFixed(2) + '%';
+	const color = `hsl(${Math.round(360*normalizedFrequency)*10}, ${colorS}, ${colorL})`;
 	arr.forEach((value, i) => {
 		ctx.beginPath();
 		ctx.moveTo(space*i, (canvas.height - value + 1));
 		ctx.lineTo(space*i, (canvas.height - value));
+		ctx.strokeStyle = color;
+		ctx.globalAlpha = alpha;
 		ctx.stroke();
 	});
 };

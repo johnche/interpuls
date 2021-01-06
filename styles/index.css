@@ -1,12 +1,12 @@
 body {
-	background-color: #011415;
+	background-color: #f0f2ee;
 	height: 100vh;
 	width: 100vw;
 	overflow: hidden;
 }
 
 .center {
-	background-color: papayawhip;
+	background-color: #f0f2ee;
 	position: absolute;
 	left: 50%;
 	top: 50%;

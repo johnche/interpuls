@@ -20,20 +20,59 @@ export const topBars = (ctx, arr, space) => {
 
 export const bottomWaves = (canvas, ctx, freqs, fftSize, arr, space, x, y) => {
 	const amplitude = Math.max(...freqs);
-	const normalizedFrequency = indexOfMax(freqs)/fftSize;
-	const colorAmplitude = Math.round((-1)*(amplitude));
-	const colorL = Math.abs((colorAmplitude)*(50/255)+80).toFixed(2)+'%';
-	const colorS = Math.abs((colorAmplitude)*(70/255)+100).toFixed(2)+'%';
-	// const colorS = ((amplitude)*(90/255)).toFixed(2)+'%';
-	const alpha = (amplitude)*(1/255);
-	
-	console.log(colorS);
-	//const colorL = (Math.round(100*normalizedFrequency)*10).toFixed(2) + '%';
+	const ampScale = amplitude*(1/255);
+	let filter = 1;
+	let alphaAmplitude = 0;
+	if (amplitude>80){
+		alphaAmplitude = ampScale;
+		filter = 1;
+	}
+	if (amplitude<=80){
+		alphaAmplitude = ampScale*0.01;
+		filter = 0;
+	}
+	const normalizedFrequency = indexOfMax(freqs)/fftSize;	
+	const colorAmplitude = Math.round(-amplitude)*filter;
+	const colorL = Math.abs((colorAmplitude)*(100/255)+100).toFixed(2)+'%';
+	const colorS = Math.abs((colorAmplitude)*(50/255)+100).toFixed(2)+'%';
 	const color = `hsl(${Math.round(360*normalizedFrequency)*10}, ${colorS}, ${colorL})`;
+	const alpha = alphaAmplitude;
 	arr.forEach((value, i) => {
 		ctx.beginPath();
-		ctx.moveTo(space*i, (canvas.height - value + 1));
+		ctx.moveTo(space*i, (canvas.height - value)+alpha*2);
 		ctx.lineTo(space*i, (canvas.height - value));
+		ctx.fill();
+		ctx.strokeStyle = color;
+		ctx.globalAlpha = alpha;
+		ctx.stroke();
+	});
+};
+
+
+export const sunRays = (canvas, ctx, freqs, fftSize, arr, space, x, y) => {
+	const amplitude = Math.max(...freqs);
+	const ampScale = amplitude*(1/255);
+	let filter = 1;
+	let alphaAmplitude = 0;
+	if (amplitude>80){
+		alphaAmplitude = ampScale;
+		filter = 1;
+	}
+	if (amplitude<=80){
+		alphaAmplitude = ampScale*0.01;
+		filter = 0;
+	}
+	const normalizedFrequency = indexOfMax(freqs)/fftSize;	
+	const colorAmplitude = Math.round(-amplitude)*filter;
+	const colorL = Math.abs((colorAmplitude)*(100/255)+100).toFixed(2)+'%';
+	const colorS = Math.abs((colorAmplitude)*(50/255)+100).toFixed(2)+'%';
+	const color = `hsl(${Math.round(360*normalizedFrequency)*10}, ${colorS}, ${colorL})`;
+	const alpha = alphaAmplitude;
+	arr.forEach((value, i) => {
+		ctx.beginPath();
+		ctx.moveTo(space*i, (canvas.height - value)+alpha);
+		ctx.quadraticCurveTo(space*i/normalizedFrequency, -(space*i/ampScale), space*i/normalizedFrequency,space*i*ampScale);
+		ctx.fill();
 		ctx.strokeStyle = color;
 		ctx.globalAlpha = alpha;
 		ctx.stroke();

@@ -33,7 +33,7 @@ export default class Visualizer {
 	render = () => {
 		//this.clear();
 		if (this.messenger.newTrack) {
-			this.ctx.translate(0, -5);
+			//this.ctx.translate(0, -5);
 			//this.ctx.setTransform(1, 0, 0, 1, 0, 0);
 			this.messenger.newTrack = false;
 		}
@@ -55,7 +55,8 @@ export default class Visualizer {
 		//topBars(this.ctx, this.samplesBuffer, this.space2);
 		//bottomBars(this.canvas, this.ctx, this.samplesBuffer, this.space);
 		if (indexOfMax(this.frequencyBuffer)>4){
-		bottomWaves(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space);
+		// bottomWaves(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space);
+		dot(this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.centerX, this.centerY);
 	}
 	};
 	stop = () => cancelAnimationFrame(this.animationId);

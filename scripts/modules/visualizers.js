@@ -81,15 +81,28 @@ export const sunRays = (canvas, ctx, freqs, fftSize, arr, space, x, y) => {
 
 export const dot = (ctx, freqs, fftSize, x, y) => {
 	const amplitude = Math.max(...freqs);
-	const normalizedFrequency = indexOfMax(freqs)/fftSize;
-	const color = `hsl(${Math.round(360*normalizedFrequency)*10}, 100%, 50%)`;
-	//const color = `rgb(${freqs[0]}, ${freqs[0]}, ${freqs[0]})`;
+	const ampScale = amplitude*(1/255);
+	let filter = 1;
+	let alphaAmplitude = 0;
+	if (amplitude>5){
+		alphaAmplitude = ampScale;
+		filter = 1;
+	}
+	if (amplitude<=5){
+		alphaAmplitude = ampScale*0.01;
+		filter = 0;
+	}
+	const normalizedFrequency = indexOfMax(freqs)/fftSize;	
+	const colorAmplitude = Math.round(-amplitude)*filter;
+	const colorL = Math.abs((colorAmplitude)*(100/255)+100).toFixed(2)+'%';
+	const colorS = Math.abs((colorAmplitude)*(50/255)+100).toFixed(2)+'%';
+	const color = `hsl(${Math.round(360*normalizedFrequency)*10}, ${colorS}, ${colorL})`;
+	const alpha = alphaAmplitude;
 
 	ctx.beginPath();
 	ctx.arc(x, y, amplitude, 0, 2 * Math.PI);
-	ctx.fillStyle = color;
 	ctx.strokeStyle = color;
-	ctx.fill();
+	ctx.globalAlpha = alpha;
 	ctx.stroke();
 };
 

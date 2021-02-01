@@ -53,30 +53,32 @@ const iterator = textList[Symbol.iterator]();
 audioVisual.onclick = () => {
     const textBoxIterator = iterator.next().value;
     if (textBoxIterator !== undefined) {
-        textCounter++;
-    textBox.innerHTML = textBoxIterator;
-    textBox.style.setProperty('display', 'block');
-    textBox.style.setProperty('opacity', 1);
-    questionText.style.display = 'none';
+        increaseTextCounter();
+
+        textBox.innerHTML = textBoxIterator;
+        textBox.style.setProperty('display', 'block');
+        textBox.style.setProperty('opacity', 1);
+        questionText.style.display = 'none';
     }
-    else{
-    textBox.style.setProperty('display', 'none');
-    textBox.style.setProperty('opacity', 0);
+    else {
+        textBox.style.setProperty('display', 'none');
+        textBox.style.setProperty('opacity', 0);
     }
 }
 textBox.onclick = () => {
     const textBoxIterator = iterator.next().value;
     if (textBoxIterator !== undefined) {
-        textCounter++;
-    textBox.innerHTML = textBoxIterator;
-    textBox.style.setProperty('display', 'block');
-    textBox.style.setProperty('opacity', 1);
-    questionText.style.display = 'none';
+        increaseTextCounter();
+
+        textBox.innerHTML = textBoxIterator;
+        textBox.style.setProperty('display', 'block');
+        textBox.style.setProperty('opacity', 1);
+        questionText.style.display = 'none';
     }
-    else{
+    else {
         textBox.style.setProperty('display', 'none');
         textBox.style.setProperty('opacity', 0);
-        }
+    }
 }
 
 question.onclick = () => {

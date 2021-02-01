@@ -1,8 +1,52 @@
 <!DOCTYPE html>
 <head>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" integrity="sha512-8bHTC73gkZ7rZ7vpqUQThUDhqcNFyYi2xgDgPDHc+GXVGHXq+xPjynxIopALmOPqzo9JZj0k6OqqewdGO3EsrQ==" crossorigin="anonymous" />
 	<link rel="stylesheet" href="./styles/index.css" />
 </head>
 <body>
-	<script type="module" src="./scripts/index.js"></script>
-	<canvas class="center" id="audio_visual" width="700px" height="700px"><canvas>
+	<div>
+		<div>
+			<div class="rectangleThingParent">
+				<div class="rectangleThing">
+					<div class="centerTop2">
+						The sounds
+						<div class="dropdown">
+							<div class = dropdown-text id = 'dropdownbutton'>by themselves</div>
+							<div class="dropdown-content">
+								<a class = dropdown-text id = 'by themselves'>in context</a>
+							</div>
+						</div> 
+					</div> 
+					<div class="centerTop3"> 
+						<button class="preferences" id="visualizer">
+							change visualizer
+						</button>
+					</div>
+					<div class="centerTop4"> 
+						<button class="preferences" id = "clear">clear</button>
+					</div>
+					<div class="centerTop5"> 
+						<button class="preferences" id="new">
+							new colors
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="module" src="./scripts/index.js"></script>
+		<canvas class="center" id="audio_visual" width="700px" height="700px"><canvas>
+	</div>
+	<div class="leftTop">
+		<img class = 'resize' id = 'question' src = './assets/visuals/questionmark.png'></img>
+	</div>
+	<div class="center">
+		<div class="question" id="questiontext"> 
+			<p>Click anywhere to start the visualizer.</p> 
+			<p>The frequency between each click determines what kind of sound will be playing.</p>  
+			<p>Explore different color configurations and visualizers by hovering over the bottom of your screen.</p> 
+		</div>
+	</div>
+	<div class="center">	
+		<div class="fade-in" id="introtext"></div>
+	</div>
 </body>

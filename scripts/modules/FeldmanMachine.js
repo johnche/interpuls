@@ -1,5 +1,7 @@
 import '../lib/howler/dist/howler.js';
-import { sleep, range, shuffleArray } from './utils.js';
+import { sleep, range, shuffleArray, random } from './utils.js';
+import { getRothko } from './rothko.js';
+export let counter = 0;
 
 export default class FeldmanMachine {
 	constructor(mediaHelper, messenger) {
@@ -117,7 +119,7 @@ export default class FeldmanMachine {
 	};
 
 	feldmanMedium = (delta, currentTrack) => {
-		if (currentTrack && delta < (0.10*currentTrack.duration()*1000)) {
+		if (currentTrack && delta < (0.50*currentTrack.duration()*1000)) {
 			this.setCategory('short');
 		}
 		else {
@@ -126,11 +128,27 @@ export default class FeldmanMachine {
 	};
 
 	feldmanShort = (delta, currentTrack, silenceDuration) => {
+		console.log('silenceDuration', silenceDuration);
+		if(getRothko().colorList.length-1 <= counter){
+			counter = 0;
+		}
 		if (currentTrack && delta < (0.10*currentTrack.duration()*1000)) {
 			this.setCategory('aggro');
+			if (getRothko().colorList.length == 1){
+				counter = 0;
+			}
+			else{
+			counter++;
+			} 
 		}
-		else if (silenceDuration > 2000) {
+		else if (silenceDuration > 1000) {
 			this.setCategory('medium');
+			if (getRothko().colorList.length == 1){
+				counter = 0;
+			}
+			else{
+			counter++;
+			}
 		}
 		else {
 			this.updateTrack('short');
@@ -163,7 +181,7 @@ export default class FeldmanMachine {
 				this.feldmanMedium(delta, currentTrack);
 				break;
 			case 'short':
-				this.feldmanShort(delta, currentTrack);
+				this.feldmanShort(delta, currentTrack, silenceDuration);
 				break;
 			case 'aggro':
 				this.feldmanAggro(silenceDuration);
@@ -173,5 +191,6 @@ export default class FeldmanMachine {
 		this.updateTimestamp();
 		this.playSound();
 		console.log('end of click', this.state);
+		// console.log(randomColor);
 	};
 }

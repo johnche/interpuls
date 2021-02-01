@@ -1,3 +1,4 @@
+import { rothkoUpdate } from './rothko.js';
 // import { chooseVisualizer } from "./visualizer.js";
 export let mode = 0;
 export let changeColor = 0;
@@ -27,6 +28,13 @@ export const textList = [
 //16 change to textiles visualizer
 
 export let textCounter = 0;
+const increaseTextCounter = () => {
+    textCounter++;
+    if (textCounter === 12) {
+        rothkoUpdate();
+    }
+};
+
 let questionClick = 0;
 let soundsCounter = 0;
     

@@ -7,7 +7,6 @@ export const textList = [
 '<p>The frequency between clicks determines what kind of sounds will be playing </p>',
 '',
 '<p>The sounds you are hearing are coming from American composer Morton Feldmans String Quartet no 2</p>',
-'',
 '<p>One of Feldmans points of interests was to separate the sounds from their context;</p>', 
 '<p>To focus on the immediate in comparison to what came before, or what is about to be.</p>',
 '',
@@ -31,6 +30,9 @@ export let textCounter = 0;
 const increaseTextCounter = () => {
     textCounter++;
     if (textCounter === 12) {
+        rothkoUpdate();
+    }
+    if (textCounter === 19) {
         rothkoUpdate();
     }
 };

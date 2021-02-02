@@ -6,10 +6,6 @@ import { mode, textCounter } from "./text.js";
 let chooseVisualizer = 0;
 let clearCanvas = 0;
 
-console.log(textCounter);
-if (textCounter == 16){
-	chooseVisualizer = 2;
-}
 document.getElementById("visualizer").onclick = function(){
 	if (chooseVisualizer >= 3){
 		chooseVisualizer = 0;
@@ -104,7 +100,7 @@ export default class Visualizer {
 
 		if (indexOfMax(this.frequencyBuffer)>4){
 
-			if (textCounter == 16){
+			if (textCounter == 15){
 				chooseVisualizer = 2;
 			}
 

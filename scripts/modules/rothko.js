@@ -22,12 +22,12 @@ const colorList2 = [
         background: '#da5f05'
     },
     {
-        colorList: ['#c04634', '#1f192c'],
-        background: '#321c22'
-    },
-    {
         colorList: ['#e069c6', '#e7919d'],
         background: '#5250bd'
+    },
+    {
+        colorList: ['#c04634', '#1f192c'],
+        background: '#321c22'
     },
     {
         colorList: ['#277eb1', '#007e9c'],
@@ -75,7 +75,7 @@ const colorList2 = [
     }
 ];
 
-let counter = 2;
+let counter = 4;
 
 let colorListCopy = [...colorList2];
 export function rothkoUpdate() {

@@ -5,53 +5,183 @@ export let changeColor = 0;
 export const textList = [
 'Click anywhere to start',
 '<p>The frequency between clicks determines what kind of sounds will be playing </p>',
-'',
+'<p>The frequency between clicks determines what kind of sounds will be playing </p>',
+'<p>The frequency between clicks determines what kind of sounds will be playing </p>',
+'<p>The frequency between clicks determines what kind of sounds will be playing </p>',
+'<p>The frequency between clicks determines what kind of sounds will be playing </p>',
+'<p>The sounds you are hearing are coming from American composer Morton Feldmans String Quartet no 2</p>',
+'<p>The sounds you are hearing are coming from American composer Morton Feldmans String Quartet no 2</p>',
+'<p>The sounds you are hearing are coming from American composer Morton Feldmans String Quartet no 2</p>',
 '<p>The sounds you are hearing are coming from American composer Morton Feldmans String Quartet no 2</p>',
 '<p>One of Feldmans points of interests was to separate the sounds from their context;</p>', 
+'<p>One of Feldmans points of interests was to separate the sounds from their context;</p>', 
+'<p>One of Feldmans points of interests was to separate the sounds from their context;</p>', 
 '<p>To focus on the immediate in comparison to what came before, or what is about to be.</p>',
-'',
+'<p>To focus on the immediate in comparison to what came before, or what is about to be.</p>',
+'<p>To focus on the immediate in comparison to what came before, or what is about to be.</p>',
+'<p>To focus on the immediate in comparison to what came before, or what is about to be.</p>',
+'<p>The quartet, depending on how one interprets it, can last until 6 hours, the longest in the history of string quartets.</p>', 
+'<p>The quartet, depending on how one interprets it, can last until 6 hours, the longest in the history of string quartets.</p>', 
 '<p>The quartet, depending on how one interprets it, can last until 6 hours, the longest in the history of string quartets.</p>', 
 '<p>By writing a piece with multiple fragments that does not necessarily feel connected on the first listen-through,</p>', 
+'<p>By writing a piece with multiple fragments that does not necessarily feel connected on the first listen-through,</p>', 
+'<p>some listeners feel confronted with the idea of having to let go of trying to make sense of it all;</p>',
+'<p>some listeners feel confronted with the idea of having to let go of trying to make sense of it all;</p>',
 '<p>some listeners feel confronted with the idea of having to let go of trying to make sense of it all;</p>',
 '<p>To rather give oneself up to the moment.</p>',
-'',
-'',
-'',
+'<p>To rather give oneself up to the moment.</p>',
+'<p>To rather give oneself up to the moment.</p>',
+'<p>To rather give oneself up to the moment.</p>',
+'<p>To rather give oneself up to the moment.</p>',
+'<p>To rather give oneself up to the moment.</p>',
+'<p>At the later stages of his career Morton Feldman was obsessed with ancient Middle Eastern patterned rugs</p>',
+'<p>At the later stages of his career Morton Feldman was obsessed with ancient Middle Eastern patterned rugs</p>',
 '<p>At the later stages of his career Morton Feldman was obsessed with ancient Middle Eastern patterned rugs</p>',
 '<p>Specifically how there is an imperfection in the way the carpets are dyed, giving each part of the carpet a different configuration, but still functioning as one whole</p>',
+'<p>Specifically how there is an imperfection in the way the carpets are dyed, giving each part of the carpet a different configuration, but still functioning as one whole</p>',
+'<p>Specifically how there is an imperfection in the way the carpets are dyed, giving each part of the carpet a different configuration, but still functioning as one whole</p>',
+'<p>One of Feldmans texture-inspired pieces (there were many, including this one) was Rothko Chapel written for his friend Mark Rothko.</p>',
 '<p>One of Feldmans texture-inspired pieces (there were many, including this one) was Rothko Chapel written for his friend Mark Rothko.</p>',
 '<p>The color palettes that is used in this audio visualizer is lifted from Mark Rothko`s color field paintings.</p>',
-'<p>Feel free to explore different color configurations and visualizers by hovering over the bottom of your screen</p>'
+'<p>The color palettes that is used in this audio visualizer is lifted from Mark Rothko`s color field paintings.</p>',
+'<p>The color palettes that is used in this audio visualizer is lifted from Mark Rothko`s color field paintings.</p>',
+'<p>Feel free to explore different color configurations and visualizers by hovering over the bottom of your screen</p>',
+'<p>Feel free to explore different color configurations and visualizers by hovering over the bottom of your screen</p>',
+'<p>Feel free to explore different color configurations and visualizers by hovering over the bottom of your screen</p>',
+''
 ]
 //12 change color
 //16 change to textiles visualizer
 
 export let textCounter = 0;
-const increaseTextCounter = () => {
-    textCounter++;
-    if (textCounter === 12) {
-        rothkoUpdate();
-    }
-    if (textCounter === 19) {
-        rothkoUpdate();
-    }
-};
-
 let questionClick = 0;
 let soundsCounter = 0;
     
 const questionSymbol = document.getElementById('question');
 const visualizer = document.getElementById('visualizer');
 const dropdownButton = document.getElementById('dropdownbutton');
-const theSounds = document.getElementById('the sounds');
 const bythemselves = document.getElementById('by themselves');
 const textBox = document.getElementById("introtext");
 const question = document.getElementById("question");
 const questionText = document.getElementById("questiontext");
-const body = document.getElementsByClassName('body');
 const audioVisual = document.getElementById('audio_visual');
-
 const iterator = textList[Symbol.iterator]();
+
+const increaseTextCounter = () => {
+    textCounter++;
+    if (textCounter === 0) {
+        textBox.style.setProperty('opacity', 1);
+    }
+    if (textCounter === 1) {
+        textBox.style.setProperty('opacity', 1);
+    }
+    if (textCounter === 3) {
+        textBox.style.setProperty('opacity', 0);
+    }
+    // if (textCounter === 4) {
+    //     textBox.style.setProperty('opacity', 0.5);
+    // }
+    // if (textCounter === 5) {
+    //     textBox.style.setProperty('opacity', 0);
+    // }
+    if (textCounter === 7) {
+        textBox.style.setProperty('opacity', 1);
+    }
+    if (textCounter === 9) {
+        textBox.style.setProperty('opacity', 0);
+    }
+    // if (textCounter === 9) {
+    //     textBox.style.setProperty('opacity', 0.5);
+    // }
+    // if (textCounter === 10) {
+    //     textBox.style.setProperty('opacity', 0);
+    // }
+    if (textCounter === 11) {
+        textBox.style.setProperty('opacity', 1);
+    }
+    if (textCounter === 13) {
+        textBox.style.setProperty('opacity', 0);
+    }
+    // if (textCounter === 13) {
+    //     textBox.style.setProperty('opacity', 0);
+    // }
+    if (textCounter === 14) {
+        textBox.style.setProperty('opacity', 1);
+    }
+    if (textCounter === 16) {
+        textBox.style.setProperty('opacity', 0);
+    }
+    // if (textCounter === 16) {
+    //     textBox.style.setProperty('opacity', 0);
+    // }
+    if (textCounter === 18) {
+        textBox.style.setProperty('opacity', 1);
+    }
+    if (textCounter === 20) {
+        textBox.style.setProperty('opacity', 0);
+    }
+    // if (textCounter === 20) {
+    //     textBox.style.setProperty('opacity', 0);
+    // }
+    if (textCounter === 21) {
+        textBox.style.setProperty('opacity', 1);
+    }
+    if (textCounter === 22) {
+        textBox.style.setProperty('opacity', 0);
+    }
+    if (textCounter === 23) {
+        textBox.style.setProperty('opacity', 1);
+    }
+    if (textCounter === 25) {
+        textBox.style.setProperty('opacity', 0);
+    }
+    // if (textCounter === 25) {
+    //     textBox.style.setProperty('opacity', 0);
+    // }
+    if (textCounter === 26) {
+        textBox.style.setProperty('opacity', 1);
+    }
+    if (textCounter === 28) {
+        textBox.style.setProperty('opacity', 0);
+    }
+    if (textCounter === 32) {
+        textBox.style.setProperty('opacity', 1);
+    }
+    if (textCounter === 34) {
+        textBox.style.setProperty('opacity', 0);
+    }
+    if (textCounter === 35) {
+        textBox.style.setProperty('opacity', 1);
+    }
+    if (textCounter === 37) {
+        textBox.style.setProperty('opacity', 0);
+    }
+    if (textCounter === 38) {
+        textBox.style.setProperty('opacity', 1);
+    }
+    if (textCounter === 39) {
+        textBox.style.setProperty('opacity', 0);
+    }
+    if (textCounter === 40) {
+        textBox.style.setProperty('opacity', 1);
+    }
+    if (textCounter === 42) {
+        textBox.style.setProperty('opacity', 0);
+    }
+    if (textCounter === 43) {
+        textBox.style.setProperty('opacity', 1);
+    }
+    if (textCounter === 46) {
+        textBox.style.setProperty('opacity', 0);
+    }
+    if (textCounter === 27) {
+        rothkoUpdate();
+    }
+    if (textCounter === 43) {
+        rothkoUpdate();
+    }
+};
+
 audioVisual.onclick = () => {
     const textBoxIterator = iterator.next().value;
     if (textBoxIterator !== undefined) {
@@ -59,7 +189,7 @@ audioVisual.onclick = () => {
 
         textBox.innerHTML = textBoxIterator;
         textBox.style.setProperty('display', 'block');
-        textBox.style.setProperty('opacity', 1);
+        //textBox.style.setProperty('opacity', 1);
         questionText.style.display = 'none';
     }
     else {
@@ -67,6 +197,7 @@ audioVisual.onclick = () => {
         textBox.style.setProperty('opacity', 0);
     }
 }
+
 textBox.onclick = () => {
     const textBoxIterator = iterator.next().value;
     if (textBoxIterator !== undefined) {
@@ -74,7 +205,7 @@ textBox.onclick = () => {
 
         textBox.innerHTML = textBoxIterator;
         textBox.style.setProperty('display', 'block');
-        textBox.style.setProperty('opacity', 1);
+        //textBox.style.setProperty('opacity', 1);
         questionText.style.display = 'none';
     }
     else {

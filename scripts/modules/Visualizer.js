@@ -100,7 +100,7 @@ export default class Visualizer {
 
 		if (indexOfMax(this.frequencyBuffer)>4){
 
-			if (textCounter == 15){
+			if (textCounter == 32){
 				chooseVisualizer = 2;
 			}
 

@@ -37,6 +37,22 @@ body {
 	opacity:10%;
   } 
 
+	.progressBarContainer {
+		width: 700px;
+		position: absolute;
+		left: 50%;
+		top: 10px;
+		transform: translate(-50%, -50%);
+		overflow: hidden;
+	}
+
+	#progressBar {
+		margin: 0 auto;
+		margin-top: 10px;
+		background-color: white;
+		height: 2px;
+	}
+
   /* .dropdown-content-text{
 	background-color: rgba(0, 0, 0, 0);
 	color: white;

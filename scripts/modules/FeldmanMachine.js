@@ -26,10 +26,14 @@ export default class FeldmanMachine {
 			current: {
 				category: 'medium',
 				howlerTrack: null,
+				startTimestamp: null,
 				finishTimestamp: null
 			},
 			recordedTimestamp: Date.now(),
 		};
+
+		this._progressBar = document.getElementById("progressBar");
+		this._progressAnimationid = window.requestAnimationFrame(this.progressBarLoop);
 
 		//(new Howl({src: 'assets/phantom.ogg'})).play();
 		// Howler creates AudioContext after sound is played
@@ -37,6 +41,19 @@ export default class FeldmanMachine {
 		this._analyser = Howler.ctx.createAnalyser();
 		Howler.masterGain.connect(this._analyser);
 	}
+
+	progressBarLoop = () => {
+		this.animationId = window.requestAnimationFrame(this.progressBarLoop);
+		if (this.state.current.howlerTrack?.playing() ?? false) {
+			const duration = this.state.current.howlerTrack.duration()*10;
+			const playbackPosition = Date.now() - this.state.current.startTimestamp;
+			const playbackPercentage = playbackPosition/duration;
+			this._progressBar.style.width = `${playbackPercentage}%`;
+		}
+		else {
+			this._progressBar.style.width = '0';
+		}
+	};
 
 	updateTimestamp = () => this.state.recordedTimestamp = Date.now();
 
@@ -108,6 +125,7 @@ export default class FeldmanMachine {
 		const sound = new Howl({
 			src: [this.getCurrentTrackPath()],
 			onend: () => {
+				this.state.current.startTimestamp = null;
 				this.state.current.finishTimestamp = Date.now();
 				console.log('onend', this.state);
 			}
@@ -115,6 +133,7 @@ export default class FeldmanMachine {
 		sound.play();
 		
 		this.state.current.howlerTrack = sound;
+		this.state.current.startTimestamp = Date.now();
 		this.state.current.finishTimestamp = null;
 	};
 

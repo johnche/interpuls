@@ -13,6 +13,7 @@ export const textList = [
 '<p>The sounds you are hearing are coming from American composer Morton Feldmans String Quartet no 2</p>',
 '<p>The sounds you are hearing are coming from American composer Morton Feldmans String Quartet no 2</p>',
 '<p>The sounds you are hearing are coming from American composer Morton Feldmans String Quartet no 2</p>',
+'<p>The sounds you are hearing are coming from American composer Morton Feldmans String Quartet no 2</p>',
 '<p>One of Feldmans points of interests was to separate the sounds from their context;</p>', 
 '<p>One of Feldmans points of interests was to separate the sounds from their context;</p>', 
 '<p>One of Feldmans points of interests was to separate the sounds from their context;</p>', 
@@ -20,9 +21,13 @@ export const textList = [
 '<p>To focus on the immediate in comparison to what came before, or what is about to be.</p>',
 '<p>To focus on the immediate in comparison to what came before, or what is about to be.</p>',
 '<p>To focus on the immediate in comparison to what came before, or what is about to be.</p>',
+'<p>To focus on the immediate in comparison to what came before, or what is about to be.</p>',
 '<p>The quartet, depending on how one interprets it, can last until 6 hours, the longest in the history of string quartets.</p>', 
 '<p>The quartet, depending on how one interprets it, can last until 6 hours, the longest in the history of string quartets.</p>', 
 '<p>The quartet, depending on how one interprets it, can last until 6 hours, the longest in the history of string quartets.</p>', 
+'<p>The quartet, depending on how one interprets it, can last until 6 hours, the longest in the history of string quartets.</p>', 
+'<p>The quartet, depending on how one interprets it, can last until 6 hours, the longest in the history of string quartets.</p>', 
+'<p>By writing a piece with multiple fragments that does not necessarily feel connected on the first listen-through,</p>', 
 '<p>By writing a piece with multiple fragments that does not necessarily feel connected on the first listen-through,</p>', 
 '<p>By writing a piece with multiple fragments that does not necessarily feel connected on the first listen-through,</p>', 
 '<p>some listeners feel confronted with the idea of having to let go of trying to make sense of it all;</p>',
@@ -42,6 +47,9 @@ export const textList = [
 '<p>Specifically how there is an imperfection in the way the carpets are dyed, giving each part of the carpet a different configuration, but still functioning as one whole</p>',
 '<p>One of Feldmans texture-inspired pieces (there were many, including this one) was Rothko Chapel written for his friend Mark Rothko.</p>',
 '<p>One of Feldmans texture-inspired pieces (there were many, including this one) was Rothko Chapel written for his friend Mark Rothko.</p>',
+'<p>One of Feldmans texture-inspired pieces (there were many, including this one) was Rothko Chapel written for his friend Mark Rothko.</p>',
+'<p>The color palettes that is used in this audio visualizer is lifted from Mark Rothko`s color field paintings.</p>',
+'<p>The color palettes that is used in this audio visualizer is lifted from Mark Rothko`s color field paintings.</p>',
 '<p>The color palettes that is used in this audio visualizer is lifted from Mark Rothko`s color field paintings.</p>',
 '<p>The color palettes that is used in this audio visualizer is lifted from Mark Rothko`s color field paintings.</p>',
 '<p>The color palettes that is used in this audio visualizer is lifted from Mark Rothko`s color field paintings.</p>',
@@ -96,67 +104,55 @@ const increaseTextCounter = () => {
     // if (textCounter === 10) {
     //     textBox.style.setProperty('opacity', 0);
     // }
-    if (textCounter === 11) {
+    if (textCounter === 12) {
         textBox.style.setProperty('opacity', 1);
     }
-    if (textCounter === 13) {
+    if (textCounter === 14) {
         textBox.style.setProperty('opacity', 0);
     }
     // if (textCounter === 13) {
     //     textBox.style.setProperty('opacity', 0);
     // }
-    if (textCounter === 14) {
+    if (textCounter === 15) {
         textBox.style.setProperty('opacity', 1);
     }
-    if (textCounter === 16) {
+    if (textCounter === 17) {
         textBox.style.setProperty('opacity', 0);
     }
     // if (textCounter === 16) {
     //     textBox.style.setProperty('opacity', 0);
     // }
-    if (textCounter === 18) {
+    if (textCounter === 20) {
         textBox.style.setProperty('opacity', 1);
     }
-    if (textCounter === 20) {
+    if (textCounter === 23) {
         textBox.style.setProperty('opacity', 0);
     }
     // if (textCounter === 20) {
     //     textBox.style.setProperty('opacity', 0);
     // }
-    if (textCounter === 21) {
+    if (textCounter === 25) {
         textBox.style.setProperty('opacity', 1);
     }
-    if (textCounter === 22) {
+    if (textCounter === 27) {
         textBox.style.setProperty('opacity', 0);
     }
-    if (textCounter === 23) {
+    if (textCounter === 28) {
         textBox.style.setProperty('opacity', 1);
     }
-    if (textCounter === 25) {
+    if (textCounter === 30) {
         textBox.style.setProperty('opacity', 0);
     }
     // if (textCounter === 25) {
     //     textBox.style.setProperty('opacity', 0);
     // }
-    if (textCounter === 26) {
+    if (textCounter === 31) {
         textBox.style.setProperty('opacity', 1);
     }
-    if (textCounter === 28) {
+    if (textCounter === 33) {
         textBox.style.setProperty('opacity', 0);
-    }
-    if (textCounter === 32) {
-        textBox.style.setProperty('opacity', 1);
-    }
-    if (textCounter === 34) {
-        textBox.style.setProperty('opacity', 0);
-    }
-    if (textCounter === 35) {
-        textBox.style.setProperty('opacity', 1);
     }
     if (textCounter === 37) {
-        textBox.style.setProperty('opacity', 0);
-    }
-    if (textCounter === 38) {
         textBox.style.setProperty('opacity', 1);
     }
     if (textCounter === 39) {
@@ -171,13 +167,25 @@ const increaseTextCounter = () => {
     if (textCounter === 43) {
         textBox.style.setProperty('opacity', 1);
     }
-    if (textCounter === 46) {
+    if (textCounter === 45) {
         textBox.style.setProperty('opacity', 0);
     }
-    if (textCounter === 27) {
+    if (textCounter === 46) {
+        textBox.style.setProperty('opacity', 1);
+    }
+    if (textCounter === 48) {
+        textBox.style.setProperty('opacity', 0);
+    }
+    if (textCounter === 51) {
+        textBox.style.setProperty('opacity', 1);
+    }
+    if (textCounter === 53) {
+        textBox.style.setProperty('opacity', 0);
+    }
+    if (textCounter === 32) {
         rothkoUpdate();
     }
-    if (textCounter === 43) {
+    if (textCounter === 51) {
         rothkoUpdate();
     }
 };

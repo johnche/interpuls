@@ -1,5 +1,5 @@
 body {
-	background-color: #191d30;
+	background-color: #da5f05;
 	height: 100vh;
 	width: 100vw;
 	overflow: hidden;
@@ -108,7 +108,7 @@ body {
 		0% {opacity:1;}
 		100% {opacity:0;}
 		} */
-
+		
 .fade {
 	text-align: left;
 	font-size: 60px;
@@ -120,12 +120,10 @@ body {
 	}
 
 	.fade-in {
-		opacity: 0%;
 		font-size: 35px;
 		color: white;
-		opacity: 0%;
 		transition:opacity 2s;
-		display: none;
+		display: block;
 		cursor: default;
 		}
 	
@@ -227,7 +225,6 @@ img.resize:active {
 }
 
 .center {
-	color: #191d30;
 	position: absolute;
 	left: 50%;
 	top: 50%;
@@ -236,7 +233,6 @@ img.resize:active {
 }
 
 .centerTop {
-	color: #191d30;
 	position: absolute;
 	left: 50%;
 	top: 11%;
@@ -281,7 +277,6 @@ img.resize:active {
 }
 
 .rightBottom {
-	color: #191d30;
 	position: absolute;
 	left: 90%;
 	top: 10%;
@@ -305,7 +300,6 @@ img.resize:active {
 }
 
 .leftCentre {
-	color: #191d30;
 	position: absolute;
 	left: 30%;
 	top: 30%;

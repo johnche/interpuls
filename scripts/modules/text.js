@@ -56,6 +56,7 @@ export const textList = [
 '<p>Feel free to explore different color configurations and visualizers by hovering over the bottom of your screen</p>',
 '<p>Feel free to explore different color configurations and visualizers by hovering over the bottom of your screen</p>',
 '<p>Feel free to explore different color configurations and visualizers by hovering over the bottom of your screen</p>',
+'<p>Feel free to explore different color configurations and visualizers by hovering over the bottom of your screen</p>',
 ''
 ]
 //12 change color
@@ -77,13 +78,13 @@ const iterator = textList[Symbol.iterator]();
 
 const increaseTextCounter = () => {
     textCounter++;
-    if (textCounter === 0) {
-        textBox.style.setProperty('opacity', 1);
-    }
     if (textCounter === 1) {
+        textBox.style.setProperty('opacity', 0);
+    }
+    if (textCounter === 2) {
         textBox.style.setProperty('opacity', 1);
     }
-    if (textCounter === 3) {
+    if (textCounter === 4) {
         textBox.style.setProperty('opacity', 0);
     }
     // if (textCounter === 4) {
@@ -125,7 +126,7 @@ const increaseTextCounter = () => {
     if (textCounter === 20) {
         textBox.style.setProperty('opacity', 1);
     }
-    if (textCounter === 23) {
+    if (textCounter === 22) {
         textBox.style.setProperty('opacity', 0);
     }
     // if (textCounter === 20) {
@@ -149,7 +150,7 @@ const increaseTextCounter = () => {
     if (textCounter === 31) {
         textBox.style.setProperty('opacity', 1);
     }
-    if (textCounter === 33) {
+    if (textCounter === 32) {
         textBox.style.setProperty('opacity', 0);
     }
     if (textCounter === 37) {

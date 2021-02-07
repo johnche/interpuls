@@ -13,7 +13,6 @@ document.getElementById("visualizer").onclick = function(){
 	else{
 	chooseVisualizer++;
 }}
-
 //buttons
 document.getElementById("clear").style.visibility = "hidden";
 if (mode == 0){
@@ -24,16 +23,6 @@ if (mode == 1){
 	document.getElementById("clear").style.visibility = "visible";
 	console.log(mode);
 }
-// document.getElementById("by themselves").onclick = function(){
-// 	mode = 0;
-// 	//hide clear
-// 	document.getElementById("clear").style.visibility = "hidden";
-// }
-// document.getElementById("in context").onclick = function(){
-// 	mode = 1;
-// 	//show clear
-// 	document.getElementById("clear").style.visibility = "visible";
-// }
 document.getElementById("clear").onclick = function(){
 	clearCanvas = 1;
 }
@@ -73,59 +62,27 @@ export default class Visualizer {
 			clearCanvas = 0;
 		}
 		if (this.messenger.newTrack) {
-			//this.ctx.translate(0, -6);
-			//this.ctx.setTransform(1, 0, 0, 1, 0, 0);
 			this.messenger.newTrack = false;
 			if (mode == 0){
 			this.clear();
 			}
 		}
-
-		//fadingDot(
-		//	this.ctx,
-		//	this.frequencyBuffer,
-		//	this.analyser.fftSize,
-		//	this.centerX,
-		//	this.centerY
-		//);
-		//dot(
-		//	this.ctx,
-		//	this.frequencyBuffer,
-		//	this.analyser.fftSize,
-		//	this.centerX,
-		//	this.centerY
-		//);
-		//topBars(this.ctx, this.samplesBuffer, this.space2);
-		//bottomBars(this.canvas, this.ctx, this.samplesBuffer, this.space);
-
 		if (indexOfMax(this.frequencyBuffer)>4){
-
 			if (textCounter == 37){
 				chooseVisualizer = 2;
 			}
-
 		if (chooseVisualizer == 0){
 			dot(this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.centerX, this.centerY);
 		}
-		// if (chooseVisualizer == 1){
-		// 	bottomBars(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space);
-		// }
 		if (chooseVisualizer == 1){
 			sunRays(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space);
 		}
-		// if (chooseVisualizer == 3){
-		// 	sunWaves(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space);
-		// }
 		if (chooseVisualizer == 2){
 			textile(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space);
 		}
-		// if (chooseVisualizer == 4){
-		// 	sunRise(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space, this.centerX, this.centerY);
-		// }
 		if (chooseVisualizer == 3){
 			fillDot(this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.centerX, this.centerY);
 		}
-
 	}};
 	stop = () => cancelAnimationFrame(this.animationId);
 }

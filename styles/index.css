@@ -216,8 +216,11 @@ img.resize:active {
 	font-size: 15px;
 	color: white;
 	display: none;
-	cursor: default;
 	}
+
+img#question {
+	cursor: pointer;
+}
 	
 .rectangleThingParent {
 	position: absolute;

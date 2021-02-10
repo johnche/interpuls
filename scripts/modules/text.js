@@ -42,12 +42,12 @@ export const textList = [
 '<p>At the later stages of his career Morton Feldman was obsessed with ancient Middle Eastern patterned rugs</p>',
 '<p>At the later stages of his career Morton Feldman was obsessed with ancient Middle Eastern patterned rugs</p>',
 '<p>At the later stages of his career Morton Feldman was obsessed with ancient Middle Eastern patterned rugs</p>',
-'<p>Specifically how there is an imperfection in the way the carpets are dyed, giving each part of the carpet a different configuration, but still functioning as one whole</p>',
-'<p>Specifically how there is an imperfection in the way the carpets are dyed, giving each part of the carpet a different configuration, but still functioning as one whole</p>',
-'<p>Specifically how there is an imperfection in the way the carpets are dyed, giving each part of the carpet a different configuration, but still functioning as one whole</p>',
-'<p>One of Feldmans texture-inspired pieces (there were many, including this one) was Rothko Chapel written for his friend Mark Rothko.</p>',
-'<p>One of Feldmans texture-inspired pieces (there were many, including this one) was Rothko Chapel written for his friend Mark Rothko.</p>',
-'<p>One of Feldmans texture-inspired pieces (there were many, including this one) was Rothko Chapel written for his friend Mark Rothko.</p>',
+'<p>Specifically how there is an imperfection in the way the carpets are dyed, giving each part of the carpet a different configuration, but still functioning as one.</p>',
+'<p>Specifically how there is an imperfection in the way the carpets are dyed, giving each part of the carpet a different configuration, but still functioning as one.</p>',
+'<p>Specifically how there is an imperfection in the way the carpets are dyed, giving each part of the carpet a different configuration, but still functioning as one.</p>',
+'<p>One of Feldmans texture-inspired pieces was Rothko Chapel written for his friend Mark Rothko.</p>',
+'<p>One of Feldmans texture-inspired pieces was Rothko Chapel written for his friend Mark Rothko.</p>',
+'<p>One of Feldmans texture-inspired pieces was Rothko Chapel written for his friend Mark Rothko.</p>',
 '<p>The color palettes that is used in this audio visualizer is lifted from Mark Rothko`s color field paintings.</p>',
 '<p>The color palettes that is used in this audio visualizer is lifted from Mark Rothko`s color field paintings.</p>',
 '<p>The color palettes that is used in this audio visualizer is lifted from Mark Rothko`s color field paintings.</p>',
@@ -59,8 +59,6 @@ export const textList = [
 '<p>Feel free to explore different color configurations and visualizers by hovering over the bottom of your screen</p>',
 ''
 ]
-//12 change color
-//16 change to textiles visualizer
 
 export let textCounter = 0;
 let questionClick = 0;
@@ -87,51 +85,30 @@ const increaseTextCounter = () => {
     if (textCounter === 4) {
         textBox.style.setProperty('opacity', 0);
     }
-    // if (textCounter === 4) {
-    //     textBox.style.setProperty('opacity', 0.5);
-    // }
-    // if (textCounter === 5) {
-    //     textBox.style.setProperty('opacity', 0);
-    // }
     if (textCounter === 7) {
         textBox.style.setProperty('opacity', 1);
     }
     if (textCounter === 9) {
         textBox.style.setProperty('opacity', 0);
     }
-    // if (textCounter === 9) {
-    //     textBox.style.setProperty('opacity', 0.5);
-    // }
-    // if (textCounter === 10) {
-    //     textBox.style.setProperty('opacity', 0);
-    // }
     if (textCounter === 12) {
         textBox.style.setProperty('opacity', 1);
     }
     if (textCounter === 14) {
         textBox.style.setProperty('opacity', 0);
     }
-    // if (textCounter === 13) {
-    //     textBox.style.setProperty('opacity', 0);
-    // }
     if (textCounter === 15) {
         textBox.style.setProperty('opacity', 1);
     }
     if (textCounter === 17) {
         textBox.style.setProperty('opacity', 0);
     }
-    // if (textCounter === 16) {
-    //     textBox.style.setProperty('opacity', 0);
-    // }
     if (textCounter === 20) {
         textBox.style.setProperty('opacity', 1);
     }
     if (textCounter === 22) {
         textBox.style.setProperty('opacity', 0);
     }
-    // if (textCounter === 20) {
-    //     textBox.style.setProperty('opacity', 0);
-    // }
     if (textCounter === 25) {
         textBox.style.setProperty('opacity', 1);
     }
@@ -144,9 +121,6 @@ const increaseTextCounter = () => {
     if (textCounter === 30) {
         textBox.style.setProperty('opacity', 0);
     }
-    // if (textCounter === 25) {
-    //     textBox.style.setProperty('opacity', 0);
-    // }
     if (textCounter === 31) {
         textBox.style.setProperty('opacity', 1);
     }
@@ -183,7 +157,7 @@ const increaseTextCounter = () => {
     if (textCounter === 53) {
         textBox.style.setProperty('opacity', 0);
     }
-    if (textCounter === 32) {
+    if (textCounter === 31) {
         rothkoUpdate();
     }
     if (textCounter === 51) {
@@ -198,7 +172,6 @@ audioVisual.onclick = () => {
 
         textBox.innerHTML = textBoxIterator;
         textBox.style.setProperty('display', 'block');
-        //textBox.style.setProperty('opacity', 1);
         questionText.style.display = 'none';
     }
     else {
@@ -214,7 +187,6 @@ textBox.onclick = () => {
 
         textBox.innerHTML = textBoxIterator;
         textBox.style.setProperty('display', 'block');
-        //textBox.style.setProperty('opacity', 1);
         questionText.style.display = 'none';
     }
     else {

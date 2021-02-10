@@ -68,6 +68,9 @@ export default class Visualizer {
 			}
 		}
 		if (indexOfMax(this.frequencyBuffer)>4){
+			if (textCounter == 31){
+				chooseVisualizer = 3;
+			}
 			if (textCounter == 37){
 				chooseVisualizer = 2;
 			}

@@ -5,47 +5,47 @@
 	<script type="module" src="./scripts/index.js"></script>
 </head>
 <body>
-	<div class="center">	
-		<div class="fade-in" id="introtext">Click anywhere to start</div>
+	<div class="rightBottom">	
+	<div class="fade-in" id="introtext">Click anywhere to start</div>
 	</div>
-			<div class="rectangleThingParent">
-				<div class="rectangleThing">
-					<div class="centerTop2">
-						The sounds
-						<div class="dropdown">
-							<div class = dropdown-text id = 'dropdownbutton'>by themselves</div>
-							<div class="dropdown-content">
-								<a class = dropdown-text id = 'by themselves'>in context</a>
-							</div>
-						</div> 
-					</div> 
-					<div class="centerTop3"> 
-						<button class="preferences" id="visualizer">
-							change visualizer
-						</button>
-					</div>
-					<div class="centerTop4"> 
-						<button class="preferences" id = "clear">clear</button>
-					</div>
-					<div class="centerTop5"> 
-						<button class="preferences" id="new">
-							new colors
-						</button>
-					</div>
-				</div>
-			</div>
-			<div class="progressBarContainer">
-				<div id="progressBar"></div>
-			</div>
-		<canvas class="center" id="audio_visual" width="700px" height="700px"><canvas>
 	<div class="leftTop">
-		<img class = 'resize' id = 'question' src = './assets/visuals/questionmark.png'></img>
+	<img class = 'resize' id = 'question' src = './assets/visuals/questionmark.png'></img>
 	</div>
 	<div class="center">
 		<div class="question" id="questiontext"> 
-			<p>Click anywhere to start the visualizer.</p> 
-			<p>The frequency between each click determines what kind of sound will be playing.</p>  
-			<p>Explore different color configurations and visualizers by hovering over the bottom of your screen.</p> 
+			Click anywhere to start the visualizer.
+			The frequency between each click determines what kind of sound will be playing.  
+			Explore different color configurations and visualizers by hovering over the bottom of your screen.
 		</div>
 	</div>
+	<div class="rectangleThingParent">
+		<div class="rectangleThing">
+			<div class="centerTop2">
+				The sounds
+				<div class="dropdown">
+					<div class = dropdown-text id = 'dropdownbutton'>by themselves</div>
+					<div class="dropdown-content">
+						<a class = dropdown-text id = 'by themselves'>in context</a>
+				</div>
+				</div> 
+			</div> 
+			<div class="centerTop3"> 
+				<button class="preferences" id="visualizer">
+					change visualizer
+				</button>
+			</div>
+			<div class="centerTop4"> 
+				<button class="preferences" id = "clear">clear</button>
+			</div>
+			<div class="centerTop5"> 
+				<button class="preferences" id="new">
+					new colors
+				</button>
+			</div>
+		</div>
+	</div>
+	<div class="progressBarContainer">
+		<div id="progressBar"></div>
+	</div>
+	<canvas class="center" id="audio_visual" width="700px" height="700px"><canvas></canvas>
 </body>

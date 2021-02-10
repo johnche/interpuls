@@ -6,7 +6,6 @@ body {
 	font-family: 'Bely';
 	font-size: 17px;
 }
-
   /* Dropdown Button */
 .dropbtn {
 	background-color: #4CAF50;
@@ -127,7 +126,7 @@ body {
 		
 .fade {
 	text-align: left;
-	font-size: 60px;
+	font-size: 30px;
 	color: white;
 	opacity: 1;
 	animation: fadeIn ease 2s;
@@ -136,7 +135,8 @@ body {
 	}
 
 	.fade-in {
-		font-size: 35px;
+		text-align: left;
+		font-size: 20px;
 		color: white;
 		transition:opacity 2s;
 		display: block;
@@ -294,8 +294,15 @@ img.resize:active {
 
 .rightBottom {
 	position: absolute;
-	left: 90%;
-	top: 10%;
+	left: 85vw;
+	top: 85vh;
+	transform: translate(-50%, -50%);
+	opacity: 1;
+}
+.rightTop {
+	position: absolute;
+	left: 85vw;
+	top: 15vh;
 	transform: translate(-50%, -50%);
 	opacity: 1;
 }

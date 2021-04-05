@@ -42,10 +42,21 @@ export const shuffleArray = (l) => {
 
 export const indexOfMax = (l) => {
 	return l.reduce((i_max, val, i, arr) => {
-		//console.log(val);
 		return (val > arr[i_max]) ? i : i_max
 	}, 0);
-}
+};
+
+export function* getIterator(l, loop=false) {
+	while (true) {
+		for (const e of l) {
+			yield e;
+		}
+
+		if (!loop) {
+			break;
+		}
+	}
+};
 
 export const hexToHSL = (H) => {
 	// Convert hex to RGB first

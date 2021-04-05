@@ -1,29 +1,33 @@
 import { indexOfMax, hexToHSL, random } from "./utils.js";
 import { counter } from "./FeldmanMachine.js";
 import { getRothko } from './rothko.js';
-import { textList, textCounter } from "./text.js";
-export let randomList = 0;
-export let alphaValue = 0;
 
-export const bottomBars = (canvas, ctx, arr, space) => {
-	arr.forEach((value, i) => {
+export const bottomBars = ({canvas, ctx, samplesBuffer, frequencyWidth}) => {
+	samplesBuffer.forEach((value, i) => {
 		ctx.beginPath();
-		ctx.moveTo(space*i, canvas.height);
-		ctx.lineTo(space*i, (canvas.height - value));
+		ctx.moveTo(frequencyWidth*i, canvas.height);
+		ctx.lineTo(frequencyWidth*i, (canvas.height - value));
 		ctx.stroke();
 	});
 };
 
-export const topBars = (ctx, arr, space) => {
-	arr.forEach((value, i) => {
+export const topBars = ({ctx, samplesBuffer, frequencyWidth}) => {
+	samplesBuffer.forEach((value, i) => {
 		ctx.beginPath();
-		ctx.moveTo(space*i, 0);
-		ctx.lineTo(space*i, value);
+		ctx.moveTo(frequencyWidth*i, 0);
+		ctx.lineTo(frequencyWidth*i, value);
 		ctx.stroke();
 	});
 };
 
-export const bottomWaves = (canvas, ctx, freqs, fftSize, arr, space) => {
+export const bottomWaves = ({
+	canvas,
+	ctx,
+	frequencyBuffer,
+	analyser,
+	samplesBuffer,
+	frequencyWidth
+}) => {
 	//change background-color to rothko-color
 	var center = document.querySelectorAll(".center");
 	for(var i = 0; i < center.length; i++){
@@ -35,7 +39,7 @@ export const bottomWaves = (canvas, ctx, freqs, fftSize, arr, space) => {
 	const colorH = getRothko().colorList[counter];
 	//convert hex to HSL
 	const hsla = hexToHSL(colorH);
-	const amplitude = Math.max(...freqs);
+	const amplitude = Math.max(...frequencyBuffer);
 	//scale amplitude
 	const ampScale = amplitude*(1/255);
 	//filter out noise
@@ -49,24 +53,31 @@ export const bottomWaves = (canvas, ctx, freqs, fftSize, arr, space) => {
 		alphaAmplitude = ampScale*0.01;
 		filter = 0;
 	}
-	const normalizedFrequency = indexOfMax(freqs)/fftSize;
+	const normalizedFrequency = indexOfMax(frequencyBuffer)/analyser.fftSize;
 	const colorAmplitude = Math.round(-amplitude)*filter;
 	const colorL = Math.abs((colorAmplitude)*(80/255)+100).toFixed(2)+'%';
 	const colorS = Math.abs((colorAmplitude)*(10/255)+100).toFixed(2)+'%';
 	const color = `hsl(${hsla[0]+(Math.round(360*normalizedFrequency)*10)}, ${colorS}, ${colorL})`;
 	const alpha = alphaAmplitude;
 	//draw
-	arr.forEach((value, i) => {
+	samplesBuffer.forEach((value, i) => {
 		ctx.beginPath();
-		ctx.moveTo(space*i, (canvas.height - value)+alpha*2);
-		ctx.lineTo(space*i, (canvas.height - value));
+		ctx.moveTo(frequencyWidth*i, (canvas.height - value)+alpha*2);
+		ctx.lineTo(frequencyWidth*i, (canvas.height - value));
 		ctx.strokeStyle = color;
 		ctx.globalAlpha = alpha;
 		ctx.stroke();
 	});
 };
 
-export const sunRays = (canvas, ctx, freqs, fftSize, arr, space) => {
+export const sunRays = ({
+	canvas,
+	ctx,
+	frequencyBuffer,
+	analyser,
+	samplesBuffer,
+	frequencyWidth
+}) => {
 	//change background-color to rothko-color
 	var center = document.querySelectorAll(".center");
 	for(var i = 0; i < center.length; i++){
@@ -78,7 +89,7 @@ export const sunRays = (canvas, ctx, freqs, fftSize, arr, space) => {
 	const colorH = getRothko().colorList[counter];
 	//convert hex to HSL
 	const hsla = hexToHSL(colorH);
-	const amplitude = Math.max(...freqs);
+	const amplitude = Math.max(...frequencyBuffer);
 	//scale amplitude
 	const ampScale = amplitude*(1/255);
 	//filter out noise
@@ -92,17 +103,17 @@ export const sunRays = (canvas, ctx, freqs, fftSize, arr, space) => {
 		alphaAmplitude = ampScale;
 		filter = 0.9;
 	}
-	const normalizedFrequency = indexOfMax(freqs)/fftSize;
+	const normalizedFrequency = indexOfMax(frequencyBuffer)/analyser.fftSize;
 	const colorAmplitude = Math.round(-amplitude)*filter;
 	const colorL = Math.abs((colorAmplitude)*(80/255)+100).toFixed(2)+'%';
 	const colorS = Math.abs((colorAmplitude)*(10/255)+100).toFixed(2)+'%';
 	const color = `hsl(${hsla[0]+(Math.round(360*normalizedFrequency)*10)}, ${colorS}, ${colorL})`;
 	const alpha = alphaAmplitude;
 	//draw
-	arr.forEach((value, i) => {
+	samplesBuffer.forEach((value, i) => {
 		ctx.beginPath();
-		ctx.moveTo(space*i/alpha, (canvas.height - value));
-		ctx.quadraticCurveTo(space*i/alpha*10, space*i*alpha*normalizedFrequency, space*i/alpha*10,space*i*alpha*normalizedFrequency);
+		ctx.moveTo(frequencyWidth*i/alpha, (canvas.height - value));
+		ctx.quadraticCurveTo(frequencyWidth*i/alpha*10, frequencyWidth*i*alpha*normalizedFrequency, frequencyWidth*i/alpha*10,frequencyWidth*i*alpha*normalizedFrequency);
 		ctx.fill();
 		ctx.strokeStyle = color;
 		ctx.globalAlpha = alpha;
@@ -110,7 +121,14 @@ export const sunRays = (canvas, ctx, freqs, fftSize, arr, space) => {
 	});
 };
 
-export const sunWaves = (canvas, ctx, freqs, fftSize, arr, space) => {
+export const sunWaves = ({
+	canvas,
+	ctx,
+	frequencyBuffer,
+	analyser,
+	samplesBuffer,
+	frequencyWidth
+}) => {
 	//change background-color to rothko-color
 	var center = document.querySelectorAll(".center");
 	for(var i = 0; i < center.length; i++){
@@ -122,7 +140,7 @@ export const sunWaves = (canvas, ctx, freqs, fftSize, arr, space) => {
 	const colorH = getRothko().colorList[counter];
 	//convert hex to HSL
 	const hsla = hexToHSL(colorH);
-	const amplitude = Math.max(...freqs);
+	const amplitude = Math.max(...frequencyBuffer);
 	//scale amplitude
 	const ampScale = amplitude*(1/255);
 	//filter out noise
@@ -136,17 +154,17 @@ export const sunWaves = (canvas, ctx, freqs, fftSize, arr, space) => {
 		alphaAmplitude = ampScale;
 		filter = 0.9;
 	}
-	const normalizedFrequency = indexOfMax(freqs)/fftSize;
+	const normalizedFrequency = indexOfMax(frequencyBuffer)/analyser.fftSize;
 	const colorAmplitude = Math.round(-amplitude)*filter;
 	const colorL = Math.abs((colorAmplitude)*(80/255)+100).toFixed(2)+'%';
 	const colorS = Math.abs((colorAmplitude)*(10/255)+100).toFixed(2)+'%';
 	const color = `hsl(${hsla[0]+(Math.round(360*normalizedFrequency)*10)}, ${colorS}, ${colorL})`;
 	const alpha = alphaAmplitude;
 	//draw
-	arr.forEach((value, i) => {
+	samplesBuffer.forEach((value, i) => {
 		ctx.beginPath();
-		ctx.moveTo(space*i*alpha, (canvas.height - value));
-		ctx.quadraticCurveTo(space*i/alpha*10, (space*i)*alpha, space*i/alpha*10,(space*i*alpha));
+		ctx.moveTo(frequencyWidth*i*alpha, (canvas.height - value));
+		ctx.quadraticCurveTo(frequencyWidth*i/alpha*10, (frequencyWidth*i)*alpha, frequencyWidth*i/alpha*10,(frequencyWidth*i*alpha));
 		ctx.fill();
 		ctx.strokeStyle = color;
 		ctx.globalAlpha = alpha;
@@ -154,7 +172,14 @@ export const sunWaves = (canvas, ctx, freqs, fftSize, arr, space) => {
 	});
 };
 
-export const colorField = (canvas, ctx, freqs, fftSize, arr, space, x, y) => {
+export const colorField = ({
+	canvas,
+	ctx,
+	frequencyBuffer,
+	analyser,
+	samplesBuffer,
+	frequencyWidth
+}) => {
 	//change background-color to rothko-color
 	var center = document.querySelectorAll(".center");
 	for(var i = 0; i < center.length; i++){
@@ -166,7 +191,7 @@ export const colorField = (canvas, ctx, freqs, fftSize, arr, space, x, y) => {
 	const colorH = getRothko().colorList[counter];
 	//convert hex to HSL
 	const hsla = hexToHSL(colorH);
-	const amplitude = Math.max(...freqs);
+	const amplitude = Math.max(...frequencyBuffer);
 	//scale amplitude
 	const ampScale = amplitude*(1/255);
 	//filter out noise
@@ -180,7 +205,7 @@ export const colorField = (canvas, ctx, freqs, fftSize, arr, space, x, y) => {
 		alphaAmplitude = ampScale;
 		filter = 0.9;
 	}
-	const normalizedFrequency = indexOfMax(freqs)/fftSize;
+	const normalizedFrequency = indexOfMax(frequencyBuffer)/analyser.fftSize;
 	const colorAmplitude = Math.round(-amplitude)*filter;
 	const h = hsla[0]+(Math.round(360*normalizedFrequency)*10);
 	const colorL = Math.abs((colorAmplitude)*(80/255)+100).toFixed(2)+'%';
@@ -189,18 +214,27 @@ export const colorField = (canvas, ctx, freqs, fftSize, arr, space, x, y) => {
 	const alpha = alphaAmplitude;
 
 	//draw
-	arr.forEach((value, i) => {
+	samplesBuffer.forEach((value, i) => {
 		ctx.beginPath();
 		// ctx.arc(x, y-50, amplitude, 0, 2 * Math.PI);
-		ctx.moveTo(space*i/alpha, ((canvas.height - value)*alpha));
-		ctx.quadraticCurveTo(space*i*alpha*normalizedFrequency, (canvas.height - value)*alpha, space*i*alpha*normalizedFrequency, (canvas.height - value)*alpha);
+		ctx.moveTo(frequencyWidth*i/alpha, ((canvas.height - value)*alpha));
+		ctx.quadraticCurveTo(frequencyWidth*i*alpha*normalizedFrequency, (canvas.height - value)*alpha, frequencyWidth*i*alpha*normalizedFrequency, (canvas.height - value)*alpha);
 		ctx.strokeStyle = color;
 		ctx.globalAlpha = alpha;
 		ctx.stroke();
 	});
 };
 
-export const sunRise = (canvas, ctx, freqs, fftSize, arr, space, x, y) => {
+export const sunRise = ({
+	canvas,
+	ctx,
+	frequencyBuffer,
+	analyser,
+	samplesBuffer,
+	frequencyWidth,
+	centerX,
+	centerY
+}) => {
 	//change background-color to rothko-color
 	var center = document.querySelectorAll(".center");
 	for(var i = 0; i < center.length; i++){
@@ -212,7 +246,7 @@ export const sunRise = (canvas, ctx, freqs, fftSize, arr, space, x, y) => {
 	const colorH = getRothko().colorList[counter];
 	//convert hex to HSL
 	const hsla = hexToHSL(colorH);
-	const amplitude = Math.max(...freqs);
+	const amplitude = Math.max(...frequencyBuffer);
 	//scale amplitude
 	const ampScale = amplitude*(1/255);
 	//filter out noise
@@ -226,7 +260,7 @@ export const sunRise = (canvas, ctx, freqs, fftSize, arr, space, x, y) => {
 		alphaAmplitude = ampScale;
 		filter = 1;
 	}
-	const normalizedFrequency = indexOfMax(freqs)/fftSize;
+	const normalizedFrequency = indexOfMax(frequencyBuffer)/analyser.fftSize;
 	const colorAmplitude = Math.round(-amplitude)*filter;
 	const h = hsla[0]+(Math.round(360*normalizedFrequency)*10);
 	const colorL = Math.abs((colorAmplitude)*(80/255)+100).toFixed(2)+'%';
@@ -235,11 +269,11 @@ export const sunRise = (canvas, ctx, freqs, fftSize, arr, space, x, y) => {
 	const alpha = alphaAmplitude;
 
 	//draw
-	arr.forEach((value, i) => {
+	samplesBuffer.forEach((value, i) => {
 		ctx.beginPath();
-		ctx.moveTo(space*i/alpha, (canvas.height - value)*h);
-		ctx.lineTo(space*i*h, (canvas.height - value)/alpha);
-		ctx.arc(x, y+200, amplitude*alpha, 0, Math.PI, 1);
+		ctx.moveTo(frequencyWidth*i/alpha, (canvas.height - value)*h);
+		ctx.lineTo(frequencyWidth*i*h, (canvas.height - value)/alpha);
+		ctx.arc(centerX, centerY+200, amplitude*alpha, 0, Math.PI, 1);
 		ctx.strokeStyle = color;
 		ctx.globalAlpha = alpha;
 		ctx.stroke();
@@ -247,7 +281,14 @@ export const sunRise = (canvas, ctx, freqs, fftSize, arr, space, x, y) => {
 	});
 };
 
-export const textile = (canvas, ctx, freqs, fftSize, arr, space) => {
+export const textile = ({
+	canvas,
+	ctx,
+	frequencyBuffer,
+	analyser,
+	samplesBuffer,
+	frequencyWidth
+}) => {
 	//change background-color to rothko-color
 	var center = document.querySelectorAll(".center");
 	for(var i = 0; i < center.length; i++){
@@ -259,7 +300,7 @@ export const textile = (canvas, ctx, freqs, fftSize, arr, space) => {
 	const colorH = getRothko().colorList[counter];
 	//convert hex to HSL
 	const hsla = hexToHSL(colorH);
-	const amplitude = Math.max(...freqs);
+	const amplitude = Math.max(...frequencyBuffer);
 	//scale amplitude
 	const ampScale = amplitude*(1/255);
 	//filter out noise
@@ -273,7 +314,7 @@ export const textile = (canvas, ctx, freqs, fftSize, arr, space) => {
 		alphaAmplitude = ampScale;
 		filter = 0.9;
 	}
-	const normalizedFrequency = indexOfMax(freqs)/fftSize;
+	const normalizedFrequency = indexOfMax(frequencyBuffer)/analyser.fftSize;
 	const colorAmplitude = Math.round(-amplitude)*filter;
 	const h = hsla[0]+(Math.round(360*normalizedFrequency)*10);
 	const colorL = Math.abs((colorAmplitude)*(80/255)+100).toFixed(2)+'%';
@@ -282,17 +323,17 @@ export const textile = (canvas, ctx, freqs, fftSize, arr, space) => {
 	const alpha = alphaAmplitude;
 
 	//draw
-	arr.forEach((value, i) => {
+	samplesBuffer.forEach((value, i) => {
 		ctx.beginPath();
 		ctx.strokeStyle = color;
 		ctx.globalAlpha = alpha;
-		ctx.moveTo(space*i*h, (canvas.height - value)*h);
-		ctx.lineTo((space*i*h), -((canvas.height - value)/alpha)*2);
+		ctx.moveTo(frequencyWidth*i*h, (canvas.height - value)*h);
+		ctx.lineTo((frequencyWidth*i*h), -((canvas.height - value)/alpha)*2);
 		ctx.stroke();
 	});
 };
 
-export const dot = (ctx, freqs, fftSize, x, y) => {
+export const dot = ({ctx, frequencyBuffer, analyser, centerX, centerY}) => {
 	//change background-color to rothko-color
 	var center = document.querySelectorAll(".center");
 	for(var i = 0; i < center.length; i++){
@@ -304,7 +345,7 @@ export const dot = (ctx, freqs, fftSize, x, y) => {
 	const colorH = getRothko().colorList[counter];
 	//convert hex to HSL
 	const hsla = hexToHSL(colorH);
-	const amplitude = Math.max(...freqs);
+	const amplitude = Math.max(...frequencyBuffer);
 	//scale amplitude
 	const ampScale = amplitude*(1/255);
 	//filter out noise
@@ -318,7 +359,7 @@ export const dot = (ctx, freqs, fftSize, x, y) => {
 		alphaAmplitude = ampScale;
 		filter = 0.1;
 	}
-	const normalizedFrequency = indexOfMax(freqs)/fftSize;
+	const normalizedFrequency = indexOfMax(frequencyBuffer)/analyser.fftSize;
 	const colorAmplitude = Math.round(-amplitude)*filter;
 	const colorL = Math.abs((colorAmplitude)*(80/255)+100).toFixed(2)+'%';
 	const colorS = Math.abs((colorAmplitude)*(10/255)+100).toFixed(2)+'%';
@@ -328,13 +369,13 @@ export const dot = (ctx, freqs, fftSize, x, y) => {
 	// document.getElementById('introtext').style.setProperty('opacity', alpha);
 	//draw
 	ctx.beginPath();
-	ctx.arc(x, y, amplitude, 0, 2 * Math.PI);
+	ctx.arc(centerX, centerY, amplitude, 0, 2 * Math.PI);
 	ctx.strokeStyle = color;
 	ctx.globalAlpha = alpha;
 	ctx.stroke();
 };
 
-export const fillDot = (ctx, freqs, fftSize, x, y) => {
+export const fillDot = ({ctx, frequencyBuffer, analyser, centerX, centerY}) => {
 	//change background-color to rothko-color
 	var center = document.querySelectorAll(".center");
 	for(var i = 0; i < center.length; i++){
@@ -346,7 +387,7 @@ export const fillDot = (ctx, freqs, fftSize, x, y) => {
 	const colorH = getRothko().colorList[counter];
 	//convert hex to HSL
 	const hsla = hexToHSL(colorH);
-	const amplitude = Math.max(...freqs);
+	const amplitude = Math.max(...frequencyBuffer);
 	//scale amplitude
 	const ampScale = amplitude*(1/255);
 	//filter out noise
@@ -365,7 +406,7 @@ export const fillDot = (ctx, freqs, fftSize, x, y) => {
 	if (amplitude<=300){
 		fillFilter = 1;
 	}
-	const normalizedFrequency = indexOfMax(freqs)/fftSize;
+	const normalizedFrequency = indexOfMax(frequencyBuffer)/analyser.fftSize;
 	const hue = Math.round(360*normalizedFrequency)*10;
 	const colorAmplitude = Math.round(-amplitude)*filter;
 	const colorL = Math.abs((colorAmplitude)*(80/255)+100).toFixed(2)+'%';
@@ -376,27 +417,27 @@ export const fillDot = (ctx, freqs, fftSize, x, y) => {
 
 	//draw
 	ctx.beginPath();
-	const gradient = ctx.createRadialGradient(x, y, 0, x, y, random(100*alpha,3000*alpha)/alpha);
+	const gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, random(100*alpha,3000*alpha)/alpha);
 	gradient.addColorStop(0, `hsla(${h}, ${colorS}, ${colorL}, 0)`);
 	gradient.addColorStop(1, `hsla(${h}, ${colorS}, ${colorL}, ${random(0,1)})`);
 	ctx.fillStyle = gradient;
-	ctx.arc(x, y, amplitude*alpha, 0, 2 * Math.PI);
+	ctx.arc(centerX, centerY, amplitude*alpha, 0, 2 * Math.PI);
 	ctx.fill();
 	ctx.strokeStyle = color;
 	ctx.globalAlpha = alpha;
 	ctx.stroke();
 };
 
-export const fadingDot = (ctx, freqs, fftSize, x, y) => {
-	const amplitude = Math.max(...freqs);
-	const normalizedFrequency = indexOfMax(freqs)/fftSize;
+export const fadingDot = ({ctx, frequencyBuffer, analyser, centerX, centerY}) => {
+	const amplitude = Math.max(...frequencyBuffer);
+	const normalizedFrequency = indexOfMax(frequencyBuffer)/analyser.fftSize;
 	const hue = Math.round(360*normalizedFrequency)*10;
 
 	ctx.beginPath();
-	const gradient = ctx.createRadialGradient(x, y, 1, x, y, amplitude);
+	const gradient = ctx.createRadialGradient(centerX, centerY, 1, centerX, centerY, amplitude);
 	gradient.addColorStop(0, `hsla(${hue}, 100%, 50%, 1)`);
 	gradient.addColorStop(1, `hsla(${hue}, 100%, 50%, 0)`);
 	ctx.fillStyle = gradient;
-	ctx.arc(x, y, amplitude, 0, 2 * Math.PI);
+	ctx.arc(centerX, centerY, amplitude, 0, 2 * Math.PI);
 	ctx.fill();
 };

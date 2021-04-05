@@ -1,5 +1,10 @@
-import { topBars, bottomBars, bottomWaves, sunRays, dot, sunWaves, colorField, fadingDot, fillDot, sunRise, textile } from "./visualizers.js";
-import { indexOfMax } from "./utils.js";
+import {
+	sunRays,
+	dot,
+	fillDot,
+	textile
+} from "./visualizers.js";
+import { getIterator, indexOfMax } from "./utils.js";
 import { mode, textCounter } from "./text.js";
 
 //mode = 0 -> dont clear between drawing, mode = 1 -> clear between drawing
@@ -32,60 +37,68 @@ export default class Visualizer {
 		this.messenger = messenger;
 		analyser.fftSize = 2048; // this should be default, but just in case...
 		this.sampleRate = sampleRate;
-		this.analyser = analyser;
 		this.animationId = window.requestAnimationFrame(this.visualizerLoop);
-		this.frequencyBuffer = new Uint8Array(analyser.frequencyBinCount);
-		this.samplesBuffer = new Uint8Array(analyser.fftSize);
 
-		this.canvas = document.getElementById('audio_visual');
-		this.ctx = this.canvas.getContext("2d");
-		this.centerX = this.canvas.width/2;
-		this.centerY = this.canvas.height/2;
-		this.space = this.canvas.width/this.frequencyBuffer.length;
-		this.space2 = this.canvas.width/this.samplesBuffer.length;
+		const canvas = document.getElementById('audio_visual');
+		const frequencyBuffer = new Uint8Array(analyser.frequencyBinCount);
+		const samplesBuffer = new Uint8Array(analyser.fftSize);
+
+		this.visualizerContext = {
+			canvas,
+			frequencyBuffer,
+			samplesBuffer,
+			analyser,
+			ctx: canvas.getContext("2d"),
+			centerX: canvas.width/2,
+			centerY: canvas.height/2,
+			frequencyWidth: canvas.width/frequencyBuffer.length,
+			samplesWidth: canvas.width/samplesBuffer.length
+		};
+
+		//this.visualizers = getIterator([dot, sunRays, textile, fillDot], loop=true);
 	}
 
 	visualizerLoop = () => {
 		this.animationId = window.requestAnimationFrame(this.visualizerLoop);
-		this.analyser.getByteFrequencyData(this.frequencyBuffer);
-		this.analyser.getByteTimeDomainData(this.samplesBuffer);
+		this.visualizerContext.analyser.getByteFrequencyData(this.visualizerContext.frequencyBuffer);
+		this.visualizerContext.analyser.getByteTimeDomainData(this.visualizerContext.samplesBuffer);
 		this.render();
 	};
 
-	clear = () => {
-		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+	clear = ({ctx, canvas}) => {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
 	};
 
 	render = () => {
 		if (clearCanvas == 1 ){
-			this.clear();
+			this.clear(this.visualizerContext);
 			clearCanvas = 0;
 		}
 		if (this.messenger.newTrack) {
 			this.messenger.newTrack = false;
 			if (mode == 0){
-			this.clear();
+				this.clear(this.visualizerContext);
 			}
 		}
-		if (indexOfMax(this.frequencyBuffer)>4){
+		if (indexOfMax(this.visualizerContext.frequencyBuffer)>4){
 			if (textCounter == 31){
 				chooseVisualizer = 3;
 			}
 			if (textCounter == 37){
 				chooseVisualizer = 2;
 			}
-		if (chooseVisualizer == 0){
-			dot(this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.centerX, this.centerY);
-		}
-		if (chooseVisualizer == 1){
-			sunRays(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space);
-		}
-		if (chooseVisualizer == 2){
-			textile(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space);
-		}
-		if (chooseVisualizer == 3){
-			fillDot(this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.centerX, this.centerY);
-		}
-	}};
+			if (chooseVisualizer == 0){
+				dot(this.visualizerContext);
+			}
+			if (chooseVisualizer == 1){
+				sunRays(this.visualizerContext);
+			}
+			if (chooseVisualizer == 2){
+				textile(this.visualizerContext);
+			}
+			if (chooseVisualizer == 3){
+				fillDot(this.visualizerContext);
+			}
+		}};
 	stop = () => cancelAnimationFrame(this.animationId);
 }

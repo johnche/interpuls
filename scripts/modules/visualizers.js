@@ -1,6 +1,10 @@
 import { indexOfMax, hexToHSL, random } from "./utils.js";
-import { counter } from "./FeldmanMachine.js";
-import { getRothko } from './rothko.js';
+
+const setBackgroundColor = color => {
+	const center = document.querySelectorAll(".center");
+	center.forEach((_, i) => center[i].style.color = color);
+	document.body.style.setProperty('background-color', color);
+};
 
 export const bottomBars = ({canvas, ctx, samplesBuffer, frequencyWidth}) => {
 	samplesBuffer.forEach((value, i) => {
@@ -26,19 +30,15 @@ export const bottomWaves = ({
 	frequencyBuffer,
 	analyser,
 	samplesBuffer,
-	frequencyWidth
+	frequencyWidth,
+	themeColor,
+	backgroundColor
 }) => {
-	//change background-color to rothko-color
-	var center = document.querySelectorAll(".center");
-	for(var i = 0; i < center.length; i++){
-	console.log(center[i].style.color);
-	center[i].style.color = getRothko().background;
-	}
-	document.body.style.setProperty('background-color', getRothko().background);
+	setBackgroundColor(backgroundColor);
+
 	//change to next color in colorList from rothko whenever feldman short has been triggered
-	const colorH = getRothko().colorList[counter];
 	//convert hex to HSL
-	const hsla = hexToHSL(colorH);
+	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
 	//scale amplitude
 	const ampScale = amplitude*(1/255);
@@ -48,17 +48,18 @@ export const bottomWaves = ({
 	if (amplitude>80){
 		alphaAmplitude = ampScale;
 		filter = 1;
-	}
-	if (amplitude<=80){
+	} else if (amplitude<=80){
 		alphaAmplitude = ampScale*0.01;
 		filter = 0;
 	}
+
 	const normalizedFrequency = indexOfMax(frequencyBuffer)/analyser.fftSize;
 	const colorAmplitude = Math.round(-amplitude)*filter;
 	const colorL = Math.abs((colorAmplitude)*(80/255)+100).toFixed(2)+'%';
 	const colorS = Math.abs((colorAmplitude)*(10/255)+100).toFixed(2)+'%';
 	const color = `hsl(${hsla[0]+(Math.round(360*normalizedFrequency)*10)}, ${colorS}, ${colorL})`;
 	const alpha = alphaAmplitude;
+
 	//draw
 	samplesBuffer.forEach((value, i) => {
 		ctx.beginPath();
@@ -76,19 +77,15 @@ export const sunRays = ({
 	frequencyBuffer,
 	analyser,
 	samplesBuffer,
-	frequencyWidth
+	frequencyWidth,
+	themeColor,
+	backgroundColor
 }) => {
-	//change background-color to rothko-color
-	var center = document.querySelectorAll(".center");
-	for(var i = 0; i < center.length; i++){
-	console.log(center[i].style.color);
-	center[i].style.color = getRothko().background;
-	}
-	document.body.style.setProperty('background-color', getRothko().background);
+	setBackgroundColor(backgroundColor);
+
 	//change to next color in colorList from rothko whenever feldman short has been triggered
-	const colorH = getRothko().colorList[counter];
 	//convert hex to HSL
-	const hsla = hexToHSL(colorH);
+	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
 	//scale amplitude
 	const ampScale = amplitude*(1/255);
@@ -127,19 +124,15 @@ export const sunWaves = ({
 	frequencyBuffer,
 	analyser,
 	samplesBuffer,
-	frequencyWidth
+	frequencyWidth,
+	themeColor,
+	backgroundColor
 }) => {
-	//change background-color to rothko-color
-	var center = document.querySelectorAll(".center");
-	for(var i = 0; i < center.length; i++){
-	console.log(center[i].style.color);
-	center[i].style.color = getRothko().background;
-	}
-	document.body.style.setProperty('background-color', getRothko().background);
+	setBackgroundColor(backgroundColor);
+
 	//change to next color in colorList from rothko whenever feldman short has been triggered
-	const colorH = getRothko().colorList[counter];
 	//convert hex to HSL
-	const hsla = hexToHSL(colorH);
+	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
 	//scale amplitude
 	const ampScale = amplitude*(1/255);
@@ -178,19 +171,15 @@ export const colorField = ({
 	frequencyBuffer,
 	analyser,
 	samplesBuffer,
-	frequencyWidth
+	frequencyWidth,
+	themeColor,
+	backgroundColor
 }) => {
-	//change background-color to rothko-color
-	var center = document.querySelectorAll(".center");
-	for(var i = 0; i < center.length; i++){
-	console.log(center[i].style.color);
-	center[i].style.color = getRothko().background;
-	}
-	document.body.style.setProperty('background-color', getRothko().background);
+	setBackgroundColor(backgroundColor);
+
 	//change to next color in colorList from rothko whenever feldman short has been triggered
-	const colorH = getRothko().colorList[counter];
 	//convert hex to HSL
-	const hsla = hexToHSL(colorH);
+	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
 	//scale amplitude
 	const ampScale = amplitude*(1/255);
@@ -207,7 +196,6 @@ export const colorField = ({
 	}
 	const normalizedFrequency = indexOfMax(frequencyBuffer)/analyser.fftSize;
 	const colorAmplitude = Math.round(-amplitude)*filter;
-	const h = hsla[0]+(Math.round(360*normalizedFrequency)*10);
 	const colorL = Math.abs((colorAmplitude)*(80/255)+100).toFixed(2)+'%';
 	const colorS = Math.abs((colorAmplitude)*(10/255)+100).toFixed(2)+'%';
 	const color = `hsl(${hsla[0]+(Math.round(360*normalizedFrequency)*10)}, ${colorS}, ${colorL})`;
@@ -233,19 +221,15 @@ export const sunRise = ({
 	samplesBuffer,
 	frequencyWidth,
 	centerX,
-	centerY
+	centerY,
+	themeColor,
+	backgroundColor
 }) => {
-	//change background-color to rothko-color
-	var center = document.querySelectorAll(".center");
-	for(var i = 0; i < center.length; i++){
-	console.log(center[i].style.color);
-	center[i].style.color = getRothko().background;
-	}
-	document.body.style.setProperty('background-color', getRothko().background);
+	setBackgroundColor(backgroundColor);
+
 	//change to next color in colorList from rothko whenever feldman short has been triggered
-	const colorH = getRothko().colorList[counter];
 	//convert hex to HSL
-	const hsla = hexToHSL(colorH);
+	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
 	//scale amplitude
 	const ampScale = amplitude*(1/255);
@@ -287,19 +271,15 @@ export const textile = ({
 	frequencyBuffer,
 	analyser,
 	samplesBuffer,
-	frequencyWidth
+	frequencyWidth,
+	themeColor,
+	backgroundColor
 }) => {
-	//change background-color to rothko-color
-	var center = document.querySelectorAll(".center");
-	for(var i = 0; i < center.length; i++){
-	console.log(center[i].style.color);
-	center[i].style.color = getRothko().background;
-	}
-	document.body.style.setProperty('background-color', getRothko().background);
+	setBackgroundColor(backgroundColor);
+
 	//change to next color in colorList from rothko whenever feldman short has been triggered
-	const colorH = getRothko().colorList[counter];
 	//convert hex to HSL
-	const hsla = hexToHSL(colorH);
+	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
 	//scale amplitude
 	const ampScale = amplitude*(1/255);
@@ -333,18 +313,20 @@ export const textile = ({
 	});
 };
 
-export const dot = ({ctx, frequencyBuffer, analyser, centerX, centerY}) => {
-	//change background-color to rothko-color
-	var center = document.querySelectorAll(".center");
-	for(var i = 0; i < center.length; i++){
-	console.log(center[i].style.color);
-	center[i].style.color = getRothko().background;
-	}
-	document.body.style.setProperty('background-color', getRothko().background);
+export const dot = ({
+	ctx,
+	frequencyBuffer,
+	analyser,
+	centerX,
+	centerY,
+	themeColor,
+	backgroundColor
+}) => {
+	setBackgroundColor(backgroundColor);
+
 	//change to next color in colorList from rothko whenever feldman short has been triggered
-	const colorH = getRothko().colorList[counter];
 	//convert hex to HSL
-	const hsla = hexToHSL(colorH);
+	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
 	//scale amplitude
 	const ampScale = amplitude*(1/255);
@@ -375,39 +357,37 @@ export const dot = ({ctx, frequencyBuffer, analyser, centerX, centerY}) => {
 	ctx.stroke();
 };
 
-export const fillDot = ({ctx, frequencyBuffer, analyser, centerX, centerY}) => {
-	//change background-color to rothko-color
-	var center = document.querySelectorAll(".center");
-	for(var i = 0; i < center.length; i++){
-	console.log(center[i].style.color);
-	center[i].style.color = getRothko().background;
-	}
-	document.body.style.setProperty('background-color', getRothko().background);
+export const fillDot = ({
+	ctx,
+	frequencyBuffer,
+	analyser,
+	centerX,
+	centerY,
+	themeColor,
+	backgroundColor
+}) => {
+	setBackgroundColor(backgroundColor);
+
 	//change to next color in colorList from rothko whenever feldman short has been triggered
-	const colorH = getRothko().colorList[counter];
 	//convert hex to HSL
-	const hsla = hexToHSL(colorH);
+	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
 	//scale amplitude
 	const ampScale = amplitude*(1/255);
 	//filter out noise
 	let filter = 1;
 	let alphaAmplitude = 0;
-	let fillFilter = 1;
 	if (amplitude>80){
 		alphaAmplitude = ampScale;
 		filter = 1;
-		fillFilter = 0;
 	}
 	if (amplitude<=80){
 		alphaAmplitude = ampScale;
 		filter = 0.9;
 	}
 	if (amplitude<=300){
-		fillFilter = 1;
 	}
 	const normalizedFrequency = indexOfMax(frequencyBuffer)/analyser.fftSize;
-	const hue = Math.round(360*normalizedFrequency)*10;
 	const colorAmplitude = Math.round(-amplitude)*filter;
 	const colorL = Math.abs((colorAmplitude)*(80/255)+100).toFixed(2)+'%';
 	const colorS = Math.abs((colorAmplitude)*(10/255)+100).toFixed(2)+'%';

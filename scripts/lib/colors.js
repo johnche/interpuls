@@ -1,6 +1,4 @@
-import { shuffleArray } from "./utils.js";
-import { textCounter } from "./text.js";
-const colorList2 = [
+export const colors = [
     {
         colorList: ['8c094f', '#0264c7'],
         background: '#043288'
@@ -74,20 +72,3 @@ const colorList2 = [
         background: '#352321'
     }
 ];
-
-let counter = 4;
-
-let colorListCopy = [...colorList2];
-export function rothkoUpdate() {
-    counter++;
-    if (counter >= colorList2.length){
-        counter = 0;
-        colorListCopy = shuffleArray(colorList2);
-    }
-    console.log('here', counter, colorListCopy[counter]);
-    console.log(counter);
-}
-
-export function getRothko() {
-    return colorListCopy[counter];
-}

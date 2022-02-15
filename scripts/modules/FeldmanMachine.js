@@ -1,11 +1,9 @@
 import '../lib/howler/dist/howler.js';
-import { sleep, range, shuffleArray, random } from './utils.js';
-import { getRothko } from './rothko.js';
-export let counter = 0;
+import Visualizer from './Visualizer.js';
+import { sleep, range, shuffleArray } from './utils.js';
 
 export default class FeldmanMachine {
-	constructor(mediaHelper, messenger) {
-		this.messenger = messenger;
+	constructor(htmlElements, mediaHelper) {
 		this.mediaHelper = mediaHelper;
 		this.state = {
 			medium: {
@@ -23,6 +21,7 @@ export default class FeldmanMachine {
 				directoryIndex: 0,
 				track: 1
 			},
+			currentCategory: 'medium',
 			current: {
 				category: 'medium',
 				howlerTrack: null,
@@ -32,7 +31,7 @@ export default class FeldmanMachine {
 			recordedTimestamp: Date.now(),
 		};
 
-		this._progressBar = document.getElementById("progressBar");
+		this._progressBar = htmlElements.progressBar;
 		this._progressAnimationid = window.requestAnimationFrame(this.progressBarLoop);
 
 		//(new Howl({src: 'assets/phantom.ogg'})).play();
@@ -40,6 +39,8 @@ export default class FeldmanMachine {
 		this.playSound();
 		this._analyser = Howler.ctx.createAnalyser();
 		Howler.masterGain.connect(this._analyser);
+
+		this.visualizer = new Visualizer(htmlElements, this._analyser, 44100);
 	}
 
 	progressBarLoop = () => {
@@ -69,7 +70,7 @@ export default class FeldmanMachine {
 	getCurrentTrackPath = () =>  {
 		const category = this.state.current.category;
 		return `./assets/audio/${category}/${this.getDir(category)}/${this.getTrack(category)}.ogg`
-	}
+	};
 
 	setCategory = (newCategory) => {
 		this.state.current.category = newCategory;
@@ -78,12 +79,12 @@ export default class FeldmanMachine {
 
 	scrambleDirectories = (category) => {
 		this.state[category].directoryList = shuffleArray(this.state[category].directoryList);
-	}
+	};
 
 	resetDirectory = (category) => {
 		this.scrambleDirectories(category);
 		this.state[category].directoryIndex = 0;
-	}
+	};
 
 	incDirectory = (category) => this.state[category].directoryIndex++;
 	resetTrack = (category) => this.state[category].track = 1;
@@ -110,11 +111,10 @@ export default class FeldmanMachine {
 		howlerTrack.fade(1, 0, 200);
 		await sleep(200);
 		howlerTrack.stop();
-	}
+	};
 
 	// Time duration, finishTimestamp
 	playSound = () => {
-		this.messenger.newTrack = true;
 		if (this.state.current.howlerTrack?.playing ?? false) {
 			this.stopTrack(this.state.current.howlerTrack);
 		}
@@ -147,27 +147,14 @@ export default class FeldmanMachine {
 	};
 
 	feldmanShort = (delta, currentTrack, silenceDuration) => {
-		console.log('silenceDuration', silenceDuration);
-		if(getRothko().colorList.length-1 <= counter){
-			counter = 0;
-		}
+		this.visualizer.updateColors();
+
+		// track is playing and very fast click since last click
 		if (currentTrack && delta < (0.10*currentTrack.duration()*1000)) {
 			this.setCategory('aggro');
-			if (getRothko().colorList.length == 1){
-				counter = 0;
-			}
-			else{
-			counter++;
-			} 
 		}
 		else if (silenceDuration > 1000) {
 			this.setCategory('medium');
-			if (getRothko().colorList.length == 1){
-				counter = 0;
-			}
-			else{
-			counter++;
-			}
 		}
 		else {
 			this.updateTrack('short');
@@ -184,7 +171,6 @@ export default class FeldmanMachine {
 		else {
 			this.updateTrack('aggro');
 		}
-
 	};
 
 	click = () => {
@@ -195,6 +181,7 @@ export default class FeldmanMachine {
 			? now - this.state.current.finishTimestamp
 			: 0;
 
+		this.visualizer.clear(this.visualizer.visualizerContext);
 		switch (this.state.current.category) {
 			case 'medium':
 				this.feldmanMedium(delta, currentTrack);
@@ -209,7 +196,6 @@ export default class FeldmanMachine {
 
 		this.updateTimestamp();
 		this.playSound();
-		console.log('end of click', this.state);
-		// console.log(randomColor);
+		this.mediaHelper.play(this.getCurrentTrackPath());
 	};
 }

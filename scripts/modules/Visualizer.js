@@ -4,44 +4,24 @@ import {
 	fillDot,
 	textile
 } from "./visualizers.js";
-import { getIterator, indexOfMax } from "./utils.js";
-import { mode, textCounter } from "./text.js";
+import { getIterator, indexOfMax, shuffleArray } from "./utils.js";
+import { colors } from "../lib/colors.js";
 
-//mode = 0 -> dont clear between drawing, mode = 1 -> clear between drawing
-let chooseVisualizer = 0;
-let clearCanvas = 0;
-
-document.getElementById("visualizer").onclick = function(){
-	if (chooseVisualizer >= 3){
-		chooseVisualizer = 0;
-	}
-	else{
-	chooseVisualizer++;
-}}
-//buttons
-document.getElementById("clear").style.visibility = "hidden";
-if (mode == 0){
-	document.getElementById("clear").style.visibility = "hidden";
-	console.log(mode);
-}
-if (mode == 1){
-	document.getElementById("clear").style.visibility = "visible";
-	console.log(mode);
-}
-document.getElementById("clear").onclick = function(){
-	clearCanvas = 1;
-}
-//visualizer
 export default class Visualizer {
-	constructor(analyser, sampleRate, messenger) {
-		this.messenger = messenger;
+	constructor(htmlElements, analyser, sampleRate) {
 		analyser.fftSize = 2048; // this should be default, but just in case...
 		this.sampleRate = sampleRate;
 		this.animationId = window.requestAnimationFrame(this.visualizerLoop);
 
-		const canvas = document.getElementById('audio_visual');
+		const canvas = htmlElements.canvas;
 		const frequencyBuffer = new Uint8Array(analyser.frequencyBinCount);
 		const samplesBuffer = new Uint8Array(analyser.fftSize);
+
+		this.visualizerIterator = getIterator([dot, sunRays, textile, fillDot], true);
+		this.visualizer = this.visualizerIterator.next().value;
+		this.colorThemeIterator = getIterator(shuffleArray([...colors]), true);
+		const { colorList, background } = this.colorThemeIterator.next().value;
+		this.currentColorsIterator = getIterator(colorList, true);
 
 		this.visualizerContext = {
 			canvas,
@@ -52,10 +32,12 @@ export default class Visualizer {
 			centerX: canvas.width/2,
 			centerY: canvas.height/2,
 			frequencyWidth: canvas.width/frequencyBuffer.length,
-			samplesWidth: canvas.width/samplesBuffer.length
+			samplesWidth: canvas.width/samplesBuffer.length,
+			themeColor: this.currentColorsIterator.next().value,
+			backgroundColor: background
 		};
 
-		//this.visualizers = getIterator([dot, sunRays, textile, fillDot], loop=true);
+		htmlElements.visualizer.onclick = this.updateVisualizer;
 	}
 
 	visualizerLoop = () => {
@@ -65,40 +47,38 @@ export default class Visualizer {
 		this.render();
 	};
 
+	updateVisualizer = () => {
+		this.visualizer = this.visualizerIterator.next().value;
+	};
+
+	updateColorTheme = () => {
+		const { colorList, background } = this.colorThemeIterator.next().value;
+		this.currentColorsIterator = getIterator(colorList, true);
+		this.visualizerContext = {
+			...this.visualizerContext,
+			themeColor: this.currentColorsIterator.next().value,
+			backgroundColor: background,
+		};
+	};
+
+	updateColors = () => {
+		this.visualizerContext = {
+			...this.visualizerContext,
+			themeColor: this.currentColorsIterator.next().value
+		};
+	};
+
 	clear = ({ctx, canvas}) => {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 	};
 
 	render = () => {
-		if (clearCanvas == 1 ){
-			this.clear(this.visualizerContext);
-			clearCanvas = 0;
+		// Only lower frequencies, we spread context properties as arguments
+		// into the visualizer
+		if (indexOfMax(this.visualizerContext.frequencyBuffer) > 4) {
+			this.visualizer(this.visualizerContext);
 		}
-		if (this.messenger.newTrack) {
-			this.messenger.newTrack = false;
-			if (mode == 0){
-				this.clear(this.visualizerContext);
-			}
-		}
-		if (indexOfMax(this.visualizerContext.frequencyBuffer)>4){
-			if (textCounter == 31){
-				chooseVisualizer = 3;
-			}
-			if (textCounter == 37){
-				chooseVisualizer = 2;
-			}
-			if (chooseVisualizer == 0){
-				dot(this.visualizerContext);
-			}
-			if (chooseVisualizer == 1){
-				sunRays(this.visualizerContext);
-			}
-			if (chooseVisualizer == 2){
-				textile(this.visualizerContext);
-			}
-			if (chooseVisualizer == 3){
-				fillDot(this.visualizerContext);
-			}
-		}};
+	};
+
 	stop = () => cancelAnimationFrame(this.animationId);
 }

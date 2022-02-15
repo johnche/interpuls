@@ -6,7 +6,7 @@ body {
 	font-family: 'Bely';
 	font-size: 17px;
 }
-  /* Dropdown Button */
+	/* Dropdown Button */
 .dropbtn {
 	background-color: #4CAF50;
 	color: white;
@@ -208,20 +208,6 @@ img.resize:active {
 	background-color: rgba(0, 0, 0, 0.5);
 }
 
-.question {
-	width: 500px;
-	height: 100%;
-	text-align: left;
-	font-family: 'Bely';
-	font-size: 15px;
-	color: white;
-	display: none;
-	}
-
-img#question {
-	cursor: pointer;
-}
-	
 .rectangleThingParent {
 	position: absolute;
 	bottom: 0vh;
@@ -295,13 +281,6 @@ img#question {
 	opacity: 1;
 }
 
-.rightBottom {
-	position: absolute;
-	left: 85vw;
-	top: 85vh;
-	transform: translate(-50%, -50%);
-	opacity: 1;
-}
 .rightTop {
 	position: absolute;
 	left: 85vw;

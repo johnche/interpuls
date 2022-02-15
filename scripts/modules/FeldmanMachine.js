@@ -153,21 +153,21 @@ export default class FeldmanMachine {
 		}
 		if (currentTrack && delta < (0.10*currentTrack.duration()*1000)) {
 			this.setCategory('aggro');
-			if (getRothko().colorList.length == 1){
-				counter = 0;
+		// 	if (getRothko().colorList.length == 1){
+		// 		counter = 0;
+		// 	}
+		// 	else{
+		// 	counter++;
+		// 	} 
 			}
-			else{
-			counter++;
-			} 
-		}
 		else if (silenceDuration > 1000) {
 			this.setCategory('medium');
-			if (getRothko().colorList.length == 1){
-				counter = 0;
-			}
-			else{
-			counter++;
-			}
+			// if (getRothko().colorList.length == 1){
+			// 	counter = 0;
+			// }
+			// else{
+			// counter++;
+			// }
 		}
 		else {
 			this.updateTrack('short');

@@ -1,4 +1,5 @@
 import {
+	vis1,
 	sunRays,
 	dot,
 	fillDot,
@@ -17,28 +18,44 @@ export default class Visualizer {
 		const frequencyBuffer = new Uint8Array(analyser.frequencyBinCount);
 		const samplesBuffer = new Uint8Array(analyser.fftSize);
 
-		this.visualizerIterator = getIterator([dot, sunRays, textile, fillDot], true);
+		this.visualizerIterator = getIterator([vis1, dot, sunRays, textile, fillDot], true);
 		this.visualizer = this.visualizerIterator.next().value;
 		this.colorThemeIterator = getIterator(shuffleArray([...colors]), true);
 		const { colorList, background } = this.colorThemeIterator.next().value;
 		this.currentColorsIterator = getIterator(colorList, true);
 
+		const centerX = canvas.width/2;
+		const centerY = canvas.height/2;
 		this.visualizerContext = {
 			canvas,
 			frequencyBuffer,
 			samplesBuffer,
 			analyser,
 			ctx: canvas.getContext("2d"),
-			centerX: canvas.width/2,
-			centerY: canvas.height/2,
 			frequencyWidth: canvas.width/frequencyBuffer.length,
 			samplesWidth: canvas.width/samplesBuffer.length,
 			themeColor: this.currentColorsIterator.next().value,
-			backgroundColor: background
+			backgroundColor: background,
+			mousePosition: { x: centerX, y: centerY },
+			clickPosition: { x: centerX, y: centerY },
+			centerX,
+			centerY,
 		};
 
-		htmlElements.visualizer.onclick = this.updateVisualizer;
+		htmlElements.visualizer.addEventListener('click', this.updateVisualizer);
+		document.addEventListener('mousemove', this.handleMouseEvent);
+		document.addEventListener('click', this.handleGlobalClick);
 	}
+
+	handleMouseEvent = (e) => {
+		this.visualizerContext.mousePosition.x = e.clientX;
+		this.visualizerContext.mousePosition.y = e.clientY;
+	};
+
+	handleGlobalClick = (e) => {
+		this.visualizerContext.clickPosition.x = e.clientX;
+		this.visualizerContext.clickPosition.y = e.clientY;
+	};
 
 	visualizerLoop = () => {
 		this.animationId = window.requestAnimationFrame(this.visualizerLoop);
@@ -49,6 +66,9 @@ export default class Visualizer {
 
 	updateVisualizer = () => {
 		this.visualizer = this.visualizerIterator.next().value;
+
+		// Clear visualizer "local" cache
+		this.visualizerContext.cache = undefined;
 	};
 
 	updateColorTheme = () => {

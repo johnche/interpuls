@@ -1,4 +1,4 @@
-import { topBars, bottomBars, bottomWaves, sunRays, square, dot, sunWaves, colorField, Corridoor, verticalWaves, fadingDot, fillDot, sunRise, textile, textileSquiggly, multipleSquare, fillMultipleDots, fillRandomStuff, fillMultipleRandomSquare, RandomSquare, fillMultipleRandomDots, fillSquare, verticalWavesTwo, squareTunnel, circleTunnel, skyTunnel, sunTunnel, hypnoTunnel, buildingTunnel, waveWalls, sunGazer, flowerPattern, flowerCircle, waveWalls2,waveWalls3,waveWalls4,waveWalls5, ocean, ocean2 } from "./visualizers.js";
+import { topBars, bottomBars, bottomWaves, sunRays, square, dot, sunWaves, colorField, Corridoor, verticalWaves, fadingDot, fillDot, sunRise, textile, textileSquiggly, multipleSquare, fillMultipleDots, fillRandomStuff, fillMultipleRandomSquare, RandomSquare, fillMultipleRandomDots, fillSquare, verticalWavesTwo, squareTunnel, circleTunnel, skyTunnel, sunTunnel, hypnoTunnel, buildingTunnel, waveWalls, sunGazer, flowerPattern, flowerCircle, waveWalls2, waveWalls3, waveWalls4, waveWalls5, ocean, ocean2, vis1, vis2,vis3, vis4 } from "./visualizers.js";
 import { indexOfMax } from "./utils.js";
 import { mode, textCounter } from "./text.js";
 
@@ -28,14 +28,36 @@ document.getElementById("clear").onclick = function () {
 	clearCanvas = 1;
 }
 
+document.onclick = inputChange;
+
+let position = {};
+
+function inputChange(e) {
+	position.x = e.clientX;
+	position.y = e.clientY;
+}
+
 document.onmousemove = handleMouseMove;
 
-var mouse = {};
+let mouse = {};
+let relativePosition = {};
 
 function handleMouseMove(e) {
-	mouse.y = e.clientY-70;
-	mouse.x = e.clientX-420;
+	mouse.y = e.clientY;
+	mouse.x = e.clientX;
+	relativePosition.y = position.y / mouse.y;
+	relativePosition.x = position.x / mouse.x;
 }
+
+let newPositionX = 1;
+let newPositionY = 1;
+let lastPositionX = newPositionX;
+let lastPositionY = newPositionY;
+
+let newPositionFlippedX = 1;
+let newPositionFlippedY = 1;
+let lastPositionFlippedX = newPositionFlippedX;
+let lastPositionFlippedY = newPositionFlippedY;
 
 //visualizer
 export default class Visualizer {
@@ -54,6 +76,9 @@ export default class Visualizer {
 		this.centerY = this.canvas.height / 2;
 		this.space = this.canvas.width / this.frequencyBuffer.length;
 		this.space2 = this.canvas.width / this.samplesBuffer.length;
+
+		// let startPositionX = this.centerX / relativePosition.x;
+		// let startPositionY = this.centerY / relativePosition.y;
 	}
 
 	visualizerLoop = () => {
@@ -87,19 +112,54 @@ export default class Visualizer {
 			}
 			//lag en visualzier som tracker hvor du er hen og lager noe symmetrisk med det
 			if (chooseVisualizer == 0) {
+				let startPositionX = this.centerX;
+				let startPositionY = this.centerY;
+				if (isNaN(relativePosition.x) == true) {
+					newPositionX = startPositionX;
+					newPositionY = startPositionY;
+					newPositionFlippedX = startPositionX;
+					newPositionFlippedY = startPositionY;
+					lastPositionX = newPositionX;
+					lastPositionY = newPositionY;
+					lastPositionFlippedX = newPositionFlippedX;
+					lastPositionFlippedY = newPositionFlippedY;
+
+				}
+				if (isNaN(relativePosition.x) != true) {
+					let speed = 10;
+					let centerRelationFlippedX = 1 - mouse.x / this.canvas.width;
+					let centerRelationFlippedY = 1 - mouse.y / this.canvas.height - 0.5;
+					let centerRelationX = mouse.x / this.canvas.width - 1;
+					let centerRelationY = mouse.y / this.canvas.height - 0.5;
+					newPositionX = lastPositionX + centerRelationX * speed;
+					newPositionY = lastPositionY + centerRelationY * speed;;
+					newPositionFlippedX = lastPositionFlippedX + centerRelationFlippedX * speed;
+					newPositionFlippedY = lastPositionFlippedY + centerRelationFlippedY * speed;
+					lastPositionX = newPositionX;
+					lastPositionY = newPositionY;
+					lastPositionFlippedX = newPositionFlippedX;
+					lastPositionFlippedY = newPositionFlippedY;
+				}
+				// console.log('lastPosition = ' + lastPositionX);
+				// console.log('center relation flipped y = ' + centerRelationFlippedY);
+				// console.log(newPositionY);
 				// square(this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.centerX, this.centerY);
 				// fillSquare(this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.centerX, this.centerY);
 				// fillMultipleRandomSquare(this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.centerX, this.centerY);
 				// fillMultipleRandomDots(this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.centerX, this.centerY);
 				// squareTunnel(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space, this.centerX, this.centerY);
 				// const lastCoordinates = buildingTunnel(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space, this.centerX, this.centerY, mouse.x, mouse.y);
-				
-				
+
+
 				// sunGazer(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space, this.centerX, this.centerY, mouse.x, mouse.y);
 				// flowerPattern(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space, this.centerX, this.centerY, mouse.x, mouse.y);
 				// buildingTunnel(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space, this.centerX, this.centerY, mouse.x, mouse.y);
-
-				waveWalls(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space, this.centerX, this.centerY, mouse.x, mouse.y);
+				// vis2(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space, this.centerX, this.centerY, mouse.x, mouse.y, relativePosition.x, relativePosition.y);
+				// vis1(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space, this.centerX, this.centerY, mouse.x, mouse.y, newPositionX, newPositionY, newPositionFlippedX, newPositionFlippedY);
+				vis4(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space, this.centerX, this.centerY, mouse.x, mouse.y, newPositionX, newPositionY, newPositionFlippedX, newPositionFlippedY);
+				// vis3(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space, this.centerX, this.centerY, mouse.x, mouse.y, newPositionX, newPositionY, newPositionFlippedX, newPositionFlippedY);
+				// vis4(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space, this.centerX, this.centerY, mouse.x, mouse.y, newPositionX, newPositionY, newPositionFlippedX, newPositionFlippedY);
+				// waveWalls(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space, this.centerX, this.centerY, mouse.x, mouse.y);
 				// waveWalls2(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space, this.centerX, this.centerY, mouse.x, mouse.y);
 				// waveWalls3(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space, this.centerX, this.centerY, mouse.x, mouse.y);
 				// waveWalls5(this.canvas, this.ctx, this.frequencyBuffer, this.analyser.fftSize, this.samplesBuffer, this.space, this.centerX, this.centerY, mouse.x, mouse.y);

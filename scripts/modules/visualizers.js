@@ -437,7 +437,7 @@ export const vis1 = ({
 	// Set initial values first
 	if (cache === undefined) {
 		cache = {};
-		cache.speed = 10;
+		cache.speed = 100;
 		cache.lastPositionX = centerX;
 		cache.lastPositionY = centerY;
 		cache.lastPositionFlippedY = centerY;

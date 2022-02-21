@@ -444,8 +444,8 @@ export const vis1 = ({
 		cache.lastPositionFlippedX = centerX;
 	}
 
-	const mouseX = mousePosition.x/canvas.width;
-	const mouseY = mousePosition.y/canvas.width;
+	const mouseX = mousePosition.x/canvas.width*2;
+	const mouseY = mousePosition.y/canvas.width*2;
 
 	const centerRelationX = mouseX - 1;
 	const centerRelationY = mouseY - 0.5;
@@ -507,40 +507,20 @@ export const vis1 = ({
 	ctx.lineCap = 'round';
 	ctx.lineJoin = 'butt';
 	ctx.lineWidth = ampScale * 2.5;
-	//upperLeftCorner
 	ctx.strokeStyle = colorShadow;
 
 	const leftXCoordinates = [0, canvas.width]
 	const rightXCoordinates = [canvas.width, 0]
-
-	// ctx.clearRect(0, 0, canvas.width, canvas.height);
-	//have a multiplier to turn on and off the verticality
 	for (var i = 0; i < 8; i++) {
 		ctx.beginPath();
 		ctx.moveTo(newPositionX, 15 + newPositionY - 20 * i);
 		ctx.bezierCurveTo(newPositionX+100, 15 + newPositionY - 20 * i, newPositionX, 15 + newPositionY - 20 * i, newPositionX, 15 + newPositionY - 20 * i);
 		ctx.stroke();
 	}
-
 	for (var i = 0; i < 8; i++) {
 		ctx.beginPath();
 		ctx.moveTo(newPositionFlippedX, newPositionFlippedY - 15 + (20 * i));
 		ctx.bezierCurveTo(newPositionFlippedX+100, newPositionFlippedY - 15 + 20 * i, newPositionFlippedX, newPositionFlippedY - 15 + 20 * i, newPositionFlippedX, newPositionFlippedY - 15 + 20 * i);
 		ctx.stroke();
 	}
-	// right
-	// // ctx.strokeStyle = color;
-	// for (var i = 0; i < 4; i++) {
-	// 	ctx.beginPath();
-	// 	ctx.moveTo(canvas.width, canvas.height - 5 - 10 * i);
-	// 	ctx.bezierCurveTo(0, canvas.height - 5 - 10 * i, 0 + mouseX * 5, canvas.height - 5 - 10 * i, canvas.width, canvas.height - 5 - 10 * i);
-	// 	ctx.stroke();
-	// }
-	// for (var i = 0; i < 45; i++) {
-	// 	ctx.beginPath();
-	// 	ctx.moveTo(canvas.width - mouseX, canvas.height + 20 * i + mouseY * ampScale);
-	// 	ctx.bezierCurveTo(canvas.width - mouseX, mouseY + 200 * i * ampScale, rightXCoordinates[0], canvas.height + 20 * i * ampScale, canvas.width - mouseX, 20 * i * ampScale);
-	// 	ctx.stroke();
-	// }
-
 };

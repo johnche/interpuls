@@ -5,15 +5,11 @@
 	<script type="module" src="./scripts/index.js"></script>
 </head>
 <body>
-	<div>
-		<canvas class="center" id="audio_visual" width="700px" height="700px">
+	<div class="leftTop" id="visualizer">
+		<img class = 'resize' id = 'question' src = './assets/visuals/questionmark.png'></img>
 	</div>
-	<div>
-		<div class="leftTop" id="visualizer">
-			<img class = 'resize' id = 'question' src = './assets/visuals/questionmark.png'></img>
-		</div>
-		<div class="progressBarContainer">
-			<div id="progressBar"></div>
-		</div>
+	<div class="progressBarContainer">
+		<div id="progressBar"></div>
 	</div>
+	<canvas class="center" id="audio_visual" width="700px" height="700px">
 </body>

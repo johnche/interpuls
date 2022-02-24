@@ -1142,9 +1142,6 @@ export const carpetCentre2 = ({
 		cache.lastPositionFlippedX = centerX;
 	}
 
-	const mouseX = mousePosition.x / window.innerWidth;
-	const mouseY = mousePosition.y / window.innerHeight;
-
 	const centerRelationX = mousePosition.x - 1;
 	const centerRelationY = mousePosition.y;
 
@@ -1206,7 +1203,7 @@ export const carpetCentre2 = ({
 	const leftXCoordinates = [0, canvas.width]
 	const rightXCoordinates = [canvas.width, 0]
 	//try rotating maybe?
-	const averageToCentre = newPositionY / centerY;
+	const averageToCentre = newPositionX/centerX;
 	let multiplier = averageToCentre;
 	if (averageToCentre > 1) {
 		multiplier = 2 - averageToCentre;
@@ -1351,7 +1348,7 @@ export const carpetCentre3 = ({
 	ctx.lineJoin = 'butt';
 
 	//try rotating maybe?
-	const averageToCentre = newPositionY / centerY;
+	const averageToCentre = newPositionX/centerX;
 	let multiplier = averageToCentre;
 	if (averageToCentre > 1) {
 		multiplier = 2 - averageToCentre;

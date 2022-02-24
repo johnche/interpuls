@@ -601,8 +601,9 @@ export const carpet4P = ({
 
 	const leftXCoordinates = [0, canvas.width]
 	const rightXCoordinates = [canvas.width, 0]
-	const ampMult = (canvas.width + canvas.height) / 100;
-	const multiplier = 5;
+	const ampMult = 1;
+	console.log(ampMult);
+	const multiplier = 10;
 	ctx.lineWidth = ampScale * multiplier / 2 / 2;
 	for (var i = 0; i < canvas.width + canvas.height / multiplier; i++) {
 		const scaleYtoX = (canvas.height - 1) * (newPositionX - 1) / canvas.width - 1 + 1;
@@ -1100,13 +1101,11 @@ export const carpet2P = ({
 	ctx.lineCap = 'round';
 	ctx.lineJoin = 'butt';
 	ctx.lineWidth = ampScale * 1;
-	const ampMult = (canvas.width + canvas.height) / 100;
+	const ampMult = (canvas.width + canvas.height) / 1000;
 	//try rotating maybe?
 	console.log('canvas.width ' + canvas.width + ' canvas height ' + canvas.height)
 	for (var i = 0; i < canvas.width; i++) {
-		const newPosH = 1.25 + canvas.height - 2.5 * i;
 		const newPosW = 1.25 + canvas.width - 2.5 * i;
-		const newPos2H = canvas.height - 2.5 * i;
 		const newPos2W = canvas.width - 2.5 * i;
 		ctx.strokeStyle = colorShadow;
 		ctx.beginPath();

@@ -7,6 +7,10 @@ body {
 	font-size: 17px;
 }
 
+.leftTop#visualizer {
+	z-index: 9999;
+}
+
 	/* Dropdown Button */
 .dropbtn {
 	background-color: #4CAF50;

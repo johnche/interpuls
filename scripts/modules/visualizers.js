@@ -996,12 +996,12 @@ export const carpet2P = ({
 		ctx.strokeStyle = colorShadow;
 		ctx.beginPath();
 		ctx.moveTo(newPosW + ampMult * ampScale, newPositionY + ampMult * ampScale);
-		ctx.bezierCurveTo(newPosW, newPositionY + 1000, newPosW, newPositionY, newPosW, newPositionY);
+		ctx.bezierCurveTo(newPosW, newPositionY + canvas.height, newPosW, newPositionY, newPosW, newPositionY);
 		ctx.stroke();
 		ctx.strokeStyle = color;
 		ctx.beginPath();
-		ctx.moveTo(newPos2W - ampMult * ampScale, newPositionFlippedY - ampMult * ampScale);
-		ctx.bezierCurveTo(newPos2W, newPositionFlippedY - 1000, newPos2W, newPositionFlippedY, newPos2W, newPositionFlippedY);
+		ctx.moveTo(newPos2W + ampMult * ampScale, newPositionFlippedY - ampMult * ampScale);
+		ctx.bezierCurveTo(newPos2W, newPositionFlippedY - canvas.height, newPos2W, newPositionFlippedY, newPos2W, newPositionFlippedY);
 		ctx.stroke();
 	}
 };

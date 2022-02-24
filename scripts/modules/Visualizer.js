@@ -4,6 +4,7 @@ import {
 	carpetCentre,
 	carpetCentre2,
 	carpetCentre3,
+	waveWalls,
 	flowerCircle,
 	vis3,
 	vis4,
@@ -27,7 +28,7 @@ export default class Visualizer {
 		const frequencyBuffer = new Uint8Array(analyser.frequencyBinCount);
 		const samplesBuffer = new Uint8Array(analyser.fftSize);
 
-		this.visualizerIterator = getIterator([carpet2P, carpet4P, carpetCentre2, carpetCentre3, vis1, fillDot], true);
+		this.visualizerIterator = getIterator([carpet2P, carpet4P, vis3, carpetCentre3, vis1, fillDot], true);
 		this.visualizer = this.visualizerIterator.next().value;
 		this.colorThemeIterator = getIterator(shuffleArray([...colors]), true);
 		const { colorList, background } = this.colorThemeIterator.next().value;

@@ -860,13 +860,13 @@ export const vis3 = ({
 	const relationToCenterFlippedX = newPositionFlippedX / canvas.width;
 	let offset = relationToCenterX;
 	let offsetFlipped = relationToCenterFlippedX;
-	let offsetFlip = -relationToCenterX+1;
-	if(relationToCenterX>1){
-		offset = 2-relationToCenterX;
+	let offsetFlip = -relationToCenterX + 1;
+	if (relationToCenterX > 1) {
+		offset = 2 - relationToCenterX;
 	}
 	console.log(offset);
-	const randomNumber = random(0,canvas.width/number/10);
-	for (var i = 0; i < canvas.width / number+1; i++) {
+	const randomNumber = random(0, canvas.width / number / 10);
+	for (var i = 0; i < canvas.width / number + 1; i++) {
 		for (var l = 0; l < canvas.height / number * 2; l++) {
 			if (i % 2 == 1) {
 				colorPicker = color;
@@ -879,10 +879,10 @@ export const vis3 = ({
 			ctx.beginPath();
 			// ctx.moveTo(((i+1) * number * offset), number / 2 * l);
 			// ctx.lineTo(((i+1) * number * offset) + number / 4, number / 2 * l);
-			ctx.moveTo(((i+1) * number * (1- offsetFlipped+1)), number / 2 * l + number/4);
-			ctx.lineTo(((i+1) * number * (1- offsetFlipped+1)) + number / 4, number / 2 * l + number/4);
-			ctx.moveTo(canvas.width - ((i+1) * number * (1- offset+1)), number / 2 * l);
-			ctx.lineTo(canvas.width - ((i+1) * number * (1- offset+1)) + number / 4, number / 2 * l);
+			ctx.moveTo(((i + 1) * number * (1 - offsetFlipped + 1)), number / 2 * l + number / 4);
+			ctx.lineTo(((i + 1) * number * (1 - offsetFlipped + 1)) + number / 4, number / 2 * l + number / 4);
+			ctx.moveTo(canvas.width - ((i + 1) * number * (1 - offset + 1)), number / 2 * l);
+			ctx.lineTo(canvas.width - ((i + 1) * number * (1 - offset + 1)) + number / 4, number / 2 * l);
 
 			// ctx.moveTo(canvas.width - i * number * offset, number / 2 * l + number/4*l);
 			// ctx.lineTo(canvas.width - i * number + newPositionX + number / 4 * offset, number / 2 * l + number/4*l);
@@ -981,38 +981,32 @@ export const vis5 = ({
 	ctx.lineJoin = 'butt';
 	const multiplier = (canvas.height + canvas.width) / 100;
 	const number = 20;
-	const xPostLength = number * 2;
-	let colorPicker = color;
-
-	const relationToCenterX = newPositionX / canvas.width;
-	const relationToCenterFlippedX = newPositionFlippedX / canvas.width;
+	const relationToCenterX = ((newPositionX / centerX)+(newPositionY/centerY))/2;
 	let offset = relationToCenterX;
-	let offsetFlipped = relationToCenterFlippedX;
-	let offsetFlip = -relationToCenterX+1;
-	if(relationToCenterX>1){
-		offset = 2-relationToCenterX;
+	let colorPicker = color;
+	if (relationToCenterX > 1) {
+		offset = 2 - relationToCenterX;
 	}
-	console.log(offset);
-	const randomNumber = random(0,canvas.width/number/10);
-	for (var i = 0; i < canvas.width / number+1; i++) {
-		for (var l = 0; l < canvas.height / number * 2; l++) {
-			ctx.lineWidth = ampScale * multiplier * 0.125;
+	if(relationToCenterX<0){
+		offset = -1*relationToCenterX;
+	}
+	for (var i = 0; i < canvas.width / number + 1; i++) {
+		for (var l = 0; l < canvas.height / number * 2 + 1; l++) {
+			ctx.lineWidth = ampScale * multiplier/5;
 			ctx.beginPath();
-			ctx.strokeStyle = color;
-			ctx.moveTo((i+1) * number * (offset), number / 2 * l + number/4);
-			ctx.lineTo((i+1) * number * (offset) + number / 4, number / 2 * l + number/4);
-			ctx.strokeStyle = colorShadow
-			ctx.moveTo(canvas.width - (i+1) * number * (offset), number / 2 * l);
-			ctx.lineTo(canvas.width - (i+1) * number * (offset) + number / 4, number / 2 * l);
+			if (i % 3 == 1) {
+				colorPicker = color;
+			}
+			if (i % 3 == 0) {
+				colorPicker = colorBackgroundShadow2;
+			}
+			ctx.strokeStyle = colorPicker;
+			ctx.moveTo(i * number, ((l + 1) * number * 2 * (1-offset+1))-number*4*ampScale*offset);
+			ctx.lineTo(i * number + number / 4, (l + 1) * number *2 * (1-offset+1)-number*4*ampScale*offset);
+			ctx.moveTo(canvas.width - (i * number)+number/2, (canvas.height - (l + 1) * number *2* (1-offset+1))+number*4*ampScale*offset);
+			ctx.lineTo(canvas.width - (i * number) + number/2 + number/4, (canvas.height - (l + 1) * number *2* (1-offset+1))+number*4*ampScale*offset);
 
-			// ctx.moveTo(canvas.width - i * number * offset, number / 2 * l + number/4*l);
-			// ctx.lineTo(canvas.width - i * number + newPositionX + number / 4 * offset, number / 2 * l + number/4*l);
-			// ctx.moveTo(i * number * (1-offset+1), number / 2 * l+ number/4*l);
-			// ctx.lineTo(i * number + number / 4 * (1-offset+1), number / 2 * l+ number/4*l);
-			// ctx.moveTo(i + number/2 * number / offset, number / 2 * l);
-			// ctx.lineTo(i + number/2 * number + newPositionX + number / 2 / offset, number / 2 * l);
-			// ctx.moveTo(canvas.width - i + number/2 * number * offset, number / 2 * l);
-			// ctx.lineTo(canvas.width - i + number/2 * number + number / 2 / offset, number / 2 * l);
+			ctx.strokeStyle = color;
 			ctx.stroke();
 		}
 	}
@@ -1379,6 +1373,153 @@ export const carpetCentre2 = ({
 			ctx.bezierCurveTo(centerX * multiplier + modifier, toCenterYFlip + modifier, centerX * multiplier - modifier, toCenterYFlip - modifier, centerX * multiplier, toCenterYFlip);
 			ctx.moveTo(centerX, centerY);
 			ctx.bezierCurveTo(centerX * oppositeMultiplier - modifier, toCenterYFlip + modifier, centerX * oppositeMultiplier + modifier, toCenterYFlip - modifier, centerX * oppositeMultiplier, toCenterYFlip);
+			ctx.stroke();
+		}
+	}
+}
+
+export const carpetCentre4 = ({
+	canvas,
+	ctx,
+	frequencyBuffer,
+	analyser,
+	themeColor,
+	backgroundColor,
+	mousePosition,
+	centerX,
+	centerY,
+	cache
+}) => {
+	// Set initial values first
+	if (cache === undefined) {
+		cache = {};
+		cache.lastPositionX = centerX;
+		cache.lastPositionY = centerY;
+		cache.lastPositionFlippedY = centerY;
+		cache.lastPositionFlippedX = centerX;
+	}
+
+	const centerRelationX = mousePosition.x - 1;
+	const centerRelationY = mousePosition.y;
+
+	const centerRelationFlippedX = 1 - mousePosition.x;
+	const centerRelationFlippedY = 1 - mousePosition.y;
+
+	const newPositionX = cache.lastPositionX + centerRelationX - window.innerWidth / 2;
+	const newPositionY = cache.lastPositionY + centerRelationY - window.innerHeight / 2;
+
+	const newPositionFlippedX = cache.lastPositionFlippedX + centerRelationFlippedX + window.innerWidth / 2;
+	const newPositionFlippedY = cache.lastPositionFlippedY + centerRelationFlippedY + window.innerHeight / 2;
+
+	cache.lastPositionX = newPositionX;
+	cache.lastPositionY = newPositionY;
+	cache.lastPositionFlippedY = newPositionFlippedX;
+	cache.lastPositionFlippedX = newPositionFlippedY;
+
+	//change background-color to rothko-color
+	var center = document.querySelectorAll(".center");
+	for (var i = 0; i < center.length; i++) {
+		center[i].style.color = backgroundColor;
+	}
+	document.body.style.setProperty('background-color', backgroundColor);
+	//convert hex to HSL
+	const hsla = hexToHSL(themeColor);
+	const amplitude = Math.max(...frequencyBuffer);
+	//scale amplitude
+	const ampScale = amplitude * (1 / 255);
+	//filter out noise
+	let filter = 1;
+	let alphaAmplitude = 0;
+
+	if (amplitude > 80) {
+		alphaAmplitude = ampScale;
+		filter = 1;
+	}
+	if (amplitude <= 80) {
+		alphaAmplitude = ampScale * 0.01;
+		filter = 0;
+	}
+
+	const normalizedFrequency = indexOfMax(frequencyBuffer) / analyser.fftSize;
+	const h = hsla[0] + (Math.round(360 * normalizedFrequency) * 10);
+	const colorAmplitude = Math.round(-amplitude) * filter;
+	const colorL = Math.abs((colorAmplitude) * (80 / 255) + 100).toFixed(2) + '%';
+	const colorLShadow = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.80).toFixed(2) + '%';
+	const colorS = Math.abs((colorAmplitude) * (10 / 255) + 100).toFixed(2) + '%';
+	const color = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorL})`;
+	const colorShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLShadow})`;
+
+	const alpha = alphaAmplitude;
+
+	const diameter = amplitude * 2;
+	const side = Math.sqrt((diameter * diameter) / 2);
+	ctx.globalAlpha = alpha;
+	ctx.lineCap = 'round';
+	ctx.lineJoin = 'butt';
+
+	const leftXCoordinates = [0, canvas.width]
+	const rightXCoordinates = [canvas.width, 0]
+	//try rotating maybe?
+	const averageToCentre = newPositionX / centerX;
+	let multiplier = averageToCentre;
+	if (averageToCentre > 1) {
+		multiplier = 2 - averageToCentre;
+	}
+	let oppositeMultiplier = (1 - multiplier) + 1;
+	if (multiplier >= 1) {
+		oppositeMultiplier = 2 - multiplier;
+	}
+	if (multiplier < 1) {
+		oppositeMultiplier = 1 - multiplier + 1
+	}
+	const divider = 10;
+	ctx.lineWidth = ampScale * divider / 5;
+	const ampMult = (canvas.width + canvas.height) / 100;
+	const modifier = ampMult * ampScale;
+
+	for (var i = 0; i < canvas.width / divider + 1; i++) {
+		let toCenterX = (centerX * multiplier) + divider * i - divider * i * multiplier;
+
+		ctx.strokeStyle = color;
+		ctx.beginPath();
+		ctx.moveTo(0 + (divider * i), 0);
+		ctx.bezierCurveTo(toCenterX - modifier, centerY * multiplier + modifier, toCenterX + modifier, centerY * multiplier + modifier, toCenterX, centerY * multiplier);
+		ctx.moveTo(0 + (divider * i), canvas.height);
+		ctx.bezierCurveTo(toCenterX + modifier, centerY * oppositeMultiplier - modifier, toCenterX - modifier, centerY * oppositeMultiplier - modifier, toCenterX, centerY * oppositeMultiplier);
+		ctx.stroke();
+		// omvendt vei
+		if (i != canvas.width / divider) {
+			let toCenterXFlip = (centerX * multiplier) - (divider * i + divider / 2) + ((divider * i + divider / 2) * oppositeMultiplier);
+			ctx.strokeStyle = colorShadow;
+			ctx.beginPath();
+			ctx.moveTo(centerX, centerY);
+			ctx.bezierCurveTo(toCenterXFlip - modifier, centerY * multiplier + modifier, toCenterXFlip + modifier, centerY * multiplier - modifier, toCenterXFlip, centerY * multiplier);
+			ctx.moveTo(centerX, centerY);
+			ctx.bezierCurveTo(toCenterXFlip + modifier, centerY * oppositeMultiplier + modifier, toCenterXFlip - modifier, centerY * oppositeMultiplier - modifier, toCenterXFlip, centerY * oppositeMultiplier);
+			ctx.stroke();
+		}
+	}
+	for (var i = 0; i < canvas.height / divider + 1; i++) {
+		ctx.strokeStyle = color;
+		let toCenterY = (centerY * multiplier) + (divider * i) - divider * i * multiplier;
+		// let toCenterY = (centerY * multiplier)-(divider*i+divider/2)+((divider*i+divider/2)*oppositeMultiplier);
+
+		ctx.moveTo(0, (i * divider));
+		ctx.bezierCurveTo(centerX * multiplier + modifier, toCenterY + modifier, centerX * multiplier - modifier, toCenterY - modifier, centerX * multiplier, toCenterY);
+		ctx.stroke();
+		ctx.moveTo(canvas.width, (i * divider));
+		ctx.bezierCurveTo(centerX * oppositeMultiplier - modifier, toCenterY - modifier, centerX * oppositeMultiplier + modifier, toCenterY + modifier, centerX * oppositeMultiplier, toCenterY);
+		ctx.stroke();
+		if (i != canvas.height / divider) {
+			let toCenterYFlip = (centerY * multiplier) - (divider * i + divider / 2) + ((divider * i + divider / 2) * oppositeMultiplier);
+			// let toCenterYFlip = (centerY * multiplier) + (divider * i) - divider*i*multiplier;
+
+			ctx.strokeStyle = colorShadow;
+			ctx.beginPath();
+			ctx.moveTo(centerX, centerY);
+			ctx.bezierCurveTo(centerX * multiplier + modifier, toCenterYFlip + modifier, centerX * multiplier - modifier, toCenterYFlip + modifier, centerX * multiplier, toCenterYFlip);
+			ctx.moveTo(centerX, centerY);
+			ctx.bezierCurveTo(centerX * oppositeMultiplier - modifier, toCenterYFlip - modifier, centerX * oppositeMultiplier + modifier, toCenterYFlip - modifier, centerX * oppositeMultiplier, toCenterYFlip);
 			ctx.stroke();
 		}
 	}

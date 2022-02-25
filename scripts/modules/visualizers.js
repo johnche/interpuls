@@ -314,17 +314,49 @@ export const textile = ({
 };
 
 export const dot = ({
+	canvas,
 	ctx,
 	frequencyBuffer,
 	analyser,
+	themeColor,
+	backgroundColor,
+	mousePosition,
 	centerX,
 	centerY,
-	themeColor,
-	backgroundColor
+	cache
 }) => {
-	setBackgroundColor(backgroundColor);
+	// Set initial values first
+	if (cache === undefined) {
+		cache = {};
+		cache.lastPositionX = 0;
+		cache.lastPositionY = 0;
+		cache.lastPositionFlippedY = centerY;
+		cache.lastPositionFlippedX = centerX;
+	}
 
-	//change to next color in colorList from rothko whenever feldman short has been triggered
+	const centerRelationX = mousePosition.x - 1;
+	const centerRelationY = mousePosition.y;
+
+	const centerRelationFlippedX = 1 - mousePosition.x;
+	const centerRelationFlippedY = 1 - mousePosition.y;
+
+	const newPositionX = cache.lastPositionX + centerRelationX - window.innerWidth / 2;
+	const newPositionY = cache.lastPositionY + centerRelationY - window.innerHeight / 2;
+
+	const newPositionFlippedX = cache.lastPositionFlippedX + centerRelationFlippedX + window.innerWidth / 2;
+	const newPositionFlippedY = cache.lastPositionFlippedY + centerRelationFlippedY + window.innerHeight / 2;
+
+	cache.lastPositionX = newPositionX;
+	cache.lastPositionY = newPositionY;
+	cache.lastPositionFlippedY = newPositionFlippedX;
+	cache.lastPositionFlippedX = newPositionFlippedY;
+
+	//change background-color to rothko-color
+	var center = document.querySelectorAll(".center");
+	for (var i = 0; i < center.length; i++) {
+		center[i].style.color = backgroundColor;
+	}
+	document.body.style.setProperty('background-color', backgroundColor);
 	//convert hex to HSL
 	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
@@ -333,28 +365,227 @@ export const dot = ({
 	//filter out noise
 	let filter = 1;
 	let alphaAmplitude = 0;
+
 	if (amplitude > 80) {
 		alphaAmplitude = ampScale;
 		filter = 1;
 	}
 	if (amplitude <= 80) {
-		alphaAmplitude = ampScale;
-		filter = 0.1;
+		alphaAmplitude = ampScale * 0.01;
+		filter = 0;
 	}
+
 	const normalizedFrequency = indexOfMax(frequencyBuffer) / analyser.fftSize;
+	const h = hsla[0] + (Math.round(360 * normalizedFrequency) * 10);
 	const colorAmplitude = Math.round(-amplitude) * filter;
 	const colorL = Math.abs((colorAmplitude) * (80 / 255) + 100).toFixed(2) + '%';
+	const colorLShadow = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.8).toFixed(2) + '%';
+	const colorLBackground = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.6).toFixed(2) + '%';
+	const colorLBackgroundShadow = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.5).toFixed(2) + '%';
 	const colorS = Math.abs((colorAmplitude) * (10 / 255) + 100).toFixed(2) + '%';
 	const color = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorL})`;
+	const colorShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLShadow})`;
+	const colorBackground = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackground})`;
+	const colorBackgroundShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackgroundShadow})`;
+	const colorBackground2 = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackground})`;
+	const colorBackgroundShadow2 = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackgroundShadow})`;
+
 	const alpha = alphaAmplitude;
-	// document.getElementById('introtext').style.setProperty('color', color);
-	// document.getElementById('introtext').style.setProperty('opacity', alpha);
-	//draw
-	ctx.beginPath();
-	ctx.arc(centerX, centerY, amplitude, 0, 2 * Math.PI);
-	ctx.strokeStyle = color;
 	ctx.globalAlpha = alpha;
-	ctx.stroke();
+	ctx.lineCap = 'round';
+	ctx.lineJoin = 'butt';
+
+	const relationToCenterX = newPositionX / centerX;
+	let offset = relationToCenterX;
+	if (relationToCenterX > 1) {
+		offset = Math.abs(2 - relationToCenterX + 1);
+	}
+	if (relationToCenterX < 0) {
+		offset = Math.abs(relationToCenterX);
+	}
+
+	// 	let relationFlip = relationToCenterX;
+
+	// 	if(offset <1){
+	// 		relationFlip = 1-offset;
+	// 	}
+	// 	if(offset>1){
+	// 		relationFlip = Math.abs(2-offset);
+	// 	}
+
+	// console.log(relationFlip);
+	const multiplier = Math.abs(100 * offset) * ampScale;
+
+	let divider = multiplier;
+	if (divider < 2) {
+		divider = 2;
+	}
+
+	const multiplierOfDiv = 2;
+
+	const firstDivider = divider * multiplierOfDiv * 2;
+	const secondDivider = divider * multiplierOfDiv;
+
+	ctx.lineWidth = ampScale * divider * 0.5;
+
+	// draw
+	for (var i = 0; i < canvas.width / firstDivider; i++) {
+		ctx.strokeStyle = color;
+		ctx.beginPath();
+		ctx.arc(centerX, centerY, i * (firstDivider), 0, 2 * Math.PI);
+		ctx.stroke();
+	}
+	for (var i = 0; i < canvas.width / secondDivider; i++) {
+		ctx.strokeStyle = colorShadow;
+		ctx.beginPath();
+		ctx.arc(centerX, centerY, canvas.width - i * (secondDivider), 0, 2 * Math.PI);
+		ctx.stroke();
+	}
+};
+
+export const rect = ({
+	canvas,
+	ctx,
+	frequencyBuffer,
+	analyser,
+	themeColor,
+	backgroundColor,
+	mousePosition,
+	centerX,
+	centerY,
+	cache
+}) => {
+	// Set initial values first
+	if (cache === undefined) {
+		cache = {};
+		cache.lastPositionX = 0;
+		cache.lastPositionY = 0;
+		cache.lastPositionFlippedY = centerY;
+		cache.lastPositionFlippedX = centerX;
+	}
+
+	const centerRelationX = mousePosition.x - 1;
+	const centerRelationY = mousePosition.y;
+
+	const centerRelationFlippedX = 1 - mousePosition.x;
+	const centerRelationFlippedY = 1 - mousePosition.y;
+
+	const newPositionX = cache.lastPositionX + centerRelationX - window.innerWidth / 2;
+	const newPositionY = cache.lastPositionY + centerRelationY - window.innerHeight / 2;
+
+	const newPositionFlippedX = cache.lastPositionFlippedX + centerRelationFlippedX + window.innerWidth / 2;
+	const newPositionFlippedY = cache.lastPositionFlippedY + centerRelationFlippedY + window.innerHeight / 2;
+
+	cache.lastPositionX = newPositionX;
+	cache.lastPositionY = newPositionY;
+	cache.lastPositionFlippedY = newPositionFlippedX;
+	cache.lastPositionFlippedX = newPositionFlippedY;
+
+	//change background-color to rothko-color
+	var center = document.querySelectorAll(".center");
+	for (var i = 0; i < center.length; i++) {
+		center[i].style.color = backgroundColor;
+	}
+	document.body.style.setProperty('background-color', backgroundColor);
+	//convert hex to HSL
+	const hsla = hexToHSL(themeColor);
+	const amplitude = Math.max(...frequencyBuffer);
+	//scale amplitude
+	const ampScale = amplitude * (1 / 255);
+	//filter out noise
+	let filter = 1;
+	let alphaAmplitude = 0;
+
+	if (amplitude > 80) {
+		alphaAmplitude = ampScale;
+		filter = 1;
+	}
+	if (amplitude <= 80) {
+		alphaAmplitude = ampScale * 0.01;
+		filter = 0;
+	}
+
+	const normalizedFrequency = indexOfMax(frequencyBuffer) / analyser.fftSize;
+	const h = hsla[0] + (Math.round(360 * normalizedFrequency) * 10);
+	const colorAmplitude = Math.round(-amplitude) * filter;
+	const colorL = Math.abs((colorAmplitude) * (80 / 255) + 100).toFixed(2) + '%';
+	const colorLShadow = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.8).toFixed(2) + '%';
+	const colorLBackground = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.6).toFixed(2) + '%';
+	const colorLBackgroundShadow = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.5).toFixed(2) + '%';
+	const colorS = Math.abs((colorAmplitude) * (10 / 255) + 100).toFixed(2) + '%';
+	const color = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorL})`;
+	const colorShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLShadow})`;
+	const colorBackground = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackground})`;
+	const colorBackgroundShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackgroundShadow})`;
+	const colorBackground2 = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackground})`;
+	const colorBackgroundShadow2 = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackgroundShadow})`;
+
+	const alpha = alphaAmplitude;
+	ctx.globalAlpha = alpha;
+	ctx.lineCap = 'round';
+	ctx.lineJoin = 'butt';
+
+	const relationToCenterX = newPositionX / centerX;
+	let offset = relationToCenterX;
+	if (relationToCenterX > 1) {
+		offset = Math.abs(2 - relationToCenterX + 1);
+	}
+	if (relationToCenterX < 0) {
+		offset = Math.abs(relationToCenterX);
+	}
+
+	// 	let relationFlip = relationToCenterX;
+
+	// 	if(offset <1){
+	// 		relationFlip = 1-offset;
+	// 	}
+	// 	if(offset>1){
+	// 		relationFlip = Math.abs(2-offset);
+	// 	}
+
+	// console.log(relationFlip);
+	const multiplier = Math.abs(100 * offset) * ampScale;
+
+	let divider = multiplier;
+	if (divider < 2) {
+		divider = 2;
+	}
+
+	const multiplierOfDiv = 2;
+
+	const firstDivider = divider * multiplierOfDiv * 2;
+	const secondDivider = divider * multiplierOfDiv;
+
+	ctx.lineWidth = ampScale * divider * 0.5;
+	for (var cH = 0; cH < canvas.height / firstDivider; cH++) {
+		for (var cW = 0; cW < canvas.width / firstDivider; cW++) {
+			ctx.strokeStyle = color;
+			ctx.beginPath();
+			ctx.rect(centerX - cW * (firstDivider), centerY - cH * (firstDivider), cW * (firstDivider), cH * (firstDivider));
+			ctx.stroke();
+		}
+	}
+	for (var cH = 0; cH < canvas.height / secondDivider; cH++) {
+		for (var cW = 0; cW < canvas.width / secondDivider; cW++) {
+			ctx.strokeStyle = colorShadow;
+			ctx.beginPath();
+			ctx.rect(centerX - canvas.width - cW * (secondDivider), centerY - canvas.height - cH * (secondDivider), canvas.width - cW * (secondDivider), canvas.height - cH * (secondDivider));
+			ctx.stroke();
+		}
+	}
+	// draw
+	// for (var i = 0; i < canvas.width / firstDivider; i++) {
+	// 	ctx.strokeStyle = color;
+	// 	ctx.beginPath();
+	// 	ctx.arc(centerX, centerY, i * (firstDivider), 0, 2 * Math.PI);
+	// 	ctx.stroke();
+	// }
+	// for (var i = 0; i < canvas.width / secondDivider; i++) {
+	// 	ctx.strokeStyle = colorShadow;
+	// 	ctx.beginPath();
+	// 	ctx.arc(centerX, centerY, canvas.width - i * (secondDivider), 0, 2 * Math.PI);
+	// 	ctx.stroke();
+	// }
 };
 
 export const fillDot = ({
@@ -515,116 +746,6 @@ export const vis1 = ({
 		ctx.beginPath();
 		ctx.moveTo(newPositionFlippedX, newPositionFlippedY - multiplier * 0.75 + (multiplier * i));
 		ctx.bezierCurveTo(newPositionFlippedX + multiplier * 5, newPositionFlippedY - multiplier * 0.75 + multiplier * i, newPositionFlippedX, newPositionFlippedY - multiplier * 0.75 + multiplier * i, newPositionFlippedX, newPositionFlippedY - multiplier * 0.75 + multiplier * i);
-		ctx.stroke();
-	}
-};
-
-export const carpet4P = ({
-	canvas,
-	ctx,
-	frequencyBuffer,
-	analyser,
-	themeColor,
-	backgroundColor,
-	mousePosition,
-	centerX,
-	centerY,
-	cache
-}) => {
-	// Set initial values first
-	if (cache === undefined) {
-		cache = {};
-		cache.lastPositionX = centerX;
-		cache.lastPositionY = centerY;
-		cache.lastPositionFlippedY = centerY;
-		cache.lastPositionFlippedX = centerX;
-	}
-
-	const centerRelationX = mousePosition.x - 1;
-	const centerRelationY = mousePosition.y - 0.5;
-
-	const centerRelationFlippedX = 1 - mousePosition.x;
-	const centerRelationFlippedY = 0.5 - mousePosition.y;
-
-	const newPositionX = cache.lastPositionX + centerRelationX - canvas.width / 2;
-	const newPositionY = cache.lastPositionY + centerRelationY - canvas.height / 2;
-
-	const newPositionFlippedX = cache.lastPositionFlippedX + centerRelationFlippedX + canvas.width / 2;
-	const newPositionFlippedY = cache.lastPositionFlippedY + centerRelationFlippedY + canvas.height / 2;
-
-	cache.lastPositionX = newPositionX;
-	cache.lastPositionY = newPositionY;
-	cache.lastPositionFlippedY = newPositionFlippedX;
-	cache.lastPositionFlippedX = newPositionFlippedY;
-
-	//change background-color to rothko-color
-	var center = document.querySelectorAll(".center");
-	for (var i = 0; i < center.length; i++) {
-		center[i].style.color = backgroundColor;
-	}
-	document.body.style.setProperty('background-color', backgroundColor);
-	//convert hex to HSL
-	const hsla = hexToHSL(themeColor);
-	const amplitude = Math.max(...frequencyBuffer);
-	//scale amplitude
-	const ampScale = amplitude * (1 / 255);
-	//filter out noise
-	let filter = 1;
-	let alphaAmplitude = 0;
-
-	if (amplitude > 80) {
-		alphaAmplitude = ampScale;
-		filter = 1;
-	}
-	if (amplitude <= 80) {
-		alphaAmplitude = ampScale * 0.01;
-		filter = 0;
-	}
-
-	const normalizedFrequency = indexOfMax(frequencyBuffer) / analyser.fftSize;
-	const h = hsla[0] + (Math.round(360 * normalizedFrequency) * 10);
-	const colorAmplitude = Math.round(-amplitude) * filter;
-	const colorL = Math.abs((colorAmplitude) * (80 / 255) + 100).toFixed(2) + '%';
-	const colorLShadow = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.80).toFixed(2) + '%';
-	const colorS = Math.abs((colorAmplitude) * (10 / 255) + 100).toFixed(2) + '%';
-	const color = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorL})`;
-	const colorShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLShadow})`;
-
-	const alpha = alphaAmplitude;
-
-	const diameter = amplitude * 2;
-	const side = Math.sqrt((diameter * diameter) / 2);
-	ctx.fillStyle = color;
-	ctx.globalAlpha = alpha;
-	ctx.lineCap = 'round';
-	ctx.lineJoin = 'butt';
-
-	const leftXCoordinates = [0, canvas.width]
-	const rightXCoordinates = [canvas.width, 0]
-	const ampMult = 1;
-	console.log(ampMult);
-	const multiplier = 10;
-	ctx.lineWidth = ampScale * multiplier / 2 / 2;
-	for (var i = 0; i < canvas.width + canvas.height / multiplier; i++) {
-		const scaleYtoX = (canvas.height - 1) * (newPositionX - 1) / canvas.width - 1 + 1;
-		const scaleYtoXFlipped = (canvas.height - 1) * (newPositionFlippedX - 1) / canvas.width - 1 + 1;
-		const newPosH = multiplier / 2 / 2 + canvas.height - multiplier / 2 * i;
-		const newPosW = multiplier / 2 / 2 + canvas.width - multiplier / 2 * i;
-		const newPos2H = canvas.height - multiplier / 2 * i;
-		const newPos2W = canvas.width - multiplier / 2 * i;
-		ctx.strokeStyle = colorShadow;
-		ctx.beginPath();
-		ctx.moveTo(newPositionX + ampMult * multiplier * ampScale, newPosH + ampMult * multiplier * ampScale);
-		ctx.bezierCurveTo(newPositionX + canvas.width * 2, newPosH, newPositionX, newPosH, newPositionX, newPosH);
-		ctx.moveTo(newPosW + ampMult * multiplier * ampScale, scaleYtoX + ampMult * multiplier * ampScale);
-		ctx.bezierCurveTo(newPosW, scaleYtoX + canvas.height * 2, newPosW, scaleYtoX + ampMult * multiplier * ampScale, newPosW, scaleYtoX);
-		ctx.stroke();
-		ctx.strokeStyle = color;
-		ctx.beginPath();
-		ctx.moveTo(newPositionFlippedX - ampMult * multiplier * ampScale, newPos2H + ampMult * multiplier * ampScale);
-		ctx.bezierCurveTo(newPositionFlippedX - canvas.width * 2, newPos2H, newPositionFlippedX, newPos2H, newPositionFlippedX, newPos2H);
-		ctx.moveTo(newPos2W + ampMult * multiplier * ampScale, newPositionFlippedX - ampMult * multiplier * ampScale);
-		ctx.bezierCurveTo(newPos2W, scaleYtoXFlipped - canvas.height * 2, newPos2W, scaleYtoXFlipped - ampMult * multiplier * ampScale, newPos2W, scaleYtoXFlipped);
 		ctx.stroke();
 	}
 };
@@ -981,18 +1102,18 @@ export const vis5 = ({
 	ctx.lineJoin = 'butt';
 	const multiplier = (canvas.height + canvas.width) / 100;
 	const number = 20;
-	const relationToCenterX = ((newPositionX / centerX)+(newPositionY/centerY))/2;
+	const relationToCenterX = ((newPositionX / centerX) + (newPositionY / centerY)) / 2;
 	let offset = relationToCenterX;
 	let colorPicker = color;
 	if (relationToCenterX > 1) {
 		offset = 2 - relationToCenterX;
 	}
-	if(relationToCenterX<0){
-		offset = -1*relationToCenterX;
+	if (relationToCenterX < 0) {
+		offset = -1 * relationToCenterX;
 	}
 	for (var i = 0; i < canvas.width / number + 1; i++) {
 		for (var l = 0; l < canvas.height / number * 2 + 1; l++) {
-			ctx.lineWidth = ampScale * multiplier/5;
+			ctx.lineWidth = ampScale * multiplier / 5;
 			ctx.beginPath();
 			if (i % 3 == 1) {
 				colorPicker = color;
@@ -1001,16 +1122,713 @@ export const vis5 = ({
 				colorPicker = colorBackgroundShadow2;
 			}
 			ctx.strokeStyle = colorPicker;
-			ctx.moveTo(i * number, ((l + 1) * number * 2 * (1-offset+1))-number*4*ampScale*offset);
-			ctx.lineTo(i * number + number / 4, (l + 1) * number *2 * (1-offset+1)-number*4*ampScale*offset);
-			ctx.moveTo(canvas.width - (i * number)+number/2, (canvas.height - (l + 1) * number *2* (1-offset+1))+number*4*ampScale*offset);
-			ctx.lineTo(canvas.width - (i * number) + number/2 + number/4, (canvas.height - (l + 1) * number *2* (1-offset+1))+number*4*ampScale*offset);
+			ctx.moveTo(i * number, ((l + 1) * number * 2 * (1 - offset + 1)) - number * 4 * ampScale * offset);
+			ctx.lineTo(i * number + number / 4, (l + 1) * number * 2 * (1 - offset + 1) - number * 4 * ampScale * offset);
+			ctx.moveTo(canvas.width - (i * number) + number / 2, (canvas.height - (l + 1) * number * 2 * (1 - offset + 1)) + number * 4 * ampScale * offset);
+			ctx.lineTo(canvas.width - (i * number) + number / 2 + number / 4, (canvas.height - (l + 1) * number * 2 * (1 - offset + 1)) + number * 4 * ampScale * offset);
 
 			ctx.strokeStyle = color;
 			ctx.stroke();
 		}
 	}
 };
+
+export const vis7 = ({
+	canvas,
+	ctx,
+	frequencyBuffer,
+	analyser,
+	themeColor,
+	backgroundColor,
+	mousePosition,
+	centerX,
+	centerY,
+	cache
+}) => {
+	// Set initial values first
+	if (cache === undefined) {
+		cache = {};
+		cache.lastPositionX = 0;
+		cache.lastPositionY = 0;
+		cache.lastPositionFlippedY = centerY;
+		cache.lastPositionFlippedX = centerX;
+	}
+
+	const centerRelationX = mousePosition.x - 1;
+	const centerRelationY = mousePosition.y;
+
+	const centerRelationFlippedX = 1 - mousePosition.x;
+	const centerRelationFlippedY = 1 - mousePosition.y;
+
+	const newPositionX = cache.lastPositionX + centerRelationX - window.innerWidth / 2;
+	const newPositionY = cache.lastPositionY + centerRelationY - window.innerHeight / 2;
+
+	const newPositionFlippedX = cache.lastPositionFlippedX + centerRelationFlippedX + window.innerWidth / 2;
+	const newPositionFlippedY = cache.lastPositionFlippedY + centerRelationFlippedY + window.innerHeight / 2;
+
+	cache.lastPositionX = newPositionX;
+	cache.lastPositionY = newPositionY;
+	cache.lastPositionFlippedY = newPositionFlippedX;
+	cache.lastPositionFlippedX = newPositionFlippedY;
+
+	//change background-color to rothko-color
+	var center = document.querySelectorAll(".center");
+	for (var i = 0; i < center.length; i++) {
+		center[i].style.color = backgroundColor;
+	}
+	document.body.style.setProperty('background-color', backgroundColor);
+	//convert hex to HSL
+	const hsla = hexToHSL(themeColor);
+	const amplitude = Math.max(...frequencyBuffer);
+	//scale amplitude
+	const ampScale = amplitude * (1 / 255);
+	//filter out noise
+	let filter = 1;
+	let alphaAmplitude = 0;
+
+	if (amplitude > 80) {
+		alphaAmplitude = ampScale;
+		filter = 1;
+	}
+	if (amplitude <= 80) {
+		alphaAmplitude = ampScale * 0.01;
+		filter = 0;
+	}
+
+	const normalizedFrequency = indexOfMax(frequencyBuffer) / analyser.fftSize;
+	const h = hsla[0] + (Math.round(360 * normalizedFrequency) * 10);
+	const colorAmplitude = Math.round(-amplitude) * filter;
+	const colorL = Math.abs((colorAmplitude) * (80 / 255) + 100).toFixed(2) + '%';
+	const colorLShadow = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.8).toFixed(2) + '%';
+	const colorLBackground = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.6).toFixed(2) + '%';
+	const colorLBackgroundShadow = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.5).toFixed(2) + '%';
+	const colorS = Math.abs((colorAmplitude) * (10 / 255) + 100).toFixed(2) + '%';
+	const color = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorL})`;
+	const colorShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLShadow})`;
+	const colorBackground = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackground})`;
+	const colorBackgroundShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackgroundShadow})`;
+	const colorBackground2 = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackground})`;
+	const colorBackgroundShadow2 = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackgroundShadow})`;
+
+	const alpha = alphaAmplitude;
+
+	ctx.globalAlpha = alpha;
+	ctx.lineCap = 'round';
+	ctx.lineJoin = 'butt';
+	const multiplier = (canvas.height + canvas.width) * 0.01;
+	const number = 30;
+	const xPostLength = number * 2;
+	let colorPicker = color;
+	const halfNumber = number * 0.5;
+
+	const relationToCenterX = newPositionX / canvas.width;
+	const relationToCenterFlippedX = newPositionFlippedX / canvas.width;
+	let offset = relationToCenterX;
+	if (relationToCenterX > 1) {
+		offset = 2 - relationToCenterX;
+	}
+	for (var i = 0; i < canvas.width / number * 2 + 1; i++) {
+		for (var l = 0; l < canvas.height / number * 2 + 1; l++) {
+			ctx.strokeStyle = color;
+			ctx.lineWidth = ampScale * multiplier * 0.5;
+			ctx.beginPath();
+			ctx.moveTo(0 + (number * i) + newPositionX, newPositionY + (number * l) - canvas.height + centerY);
+			ctx.lineTo(0 + (number * i) + newPositionX, newPositionY + (number * l) - canvas.height + centerY);
+			ctx.stroke();
+			ctx.strokeStyle = colorShadow;
+			ctx.moveTo(canvas.width - ((number * i) + newPositionX - halfNumber), canvas.height - ((number * l) + newPositionY - halfNumber * 2) + canvas.height - centerY);
+			ctx.lineTo(canvas.width - ((number * i) + newPositionX - halfNumber), canvas.height - ((number * l) + newPositionY - halfNumber * 2) + canvas.height - centerY);
+			ctx.stroke();
+		}
+	}
+};
+
+export const vis10 = ({
+	canvas,
+	ctx,
+	frequencyBuffer,
+	analyser,
+	themeColor,
+	backgroundColor,
+	mousePosition,
+	centerX,
+	centerY,
+	cache
+}) => {
+	// Set initial values first
+	if (cache === undefined) {
+		cache = {};
+		cache.lastPositionX = 0;
+		cache.lastPositionY = 0;
+		cache.lastPositionFlippedY = centerY;
+		cache.lastPositionFlippedX = centerX;
+	}
+
+	const centerRelationX = mousePosition.x - 1;
+	const centerRelationY = mousePosition.y;
+
+	const centerRelationFlippedX = 1 - mousePosition.x;
+	const centerRelationFlippedY = 1 - mousePosition.y;
+
+	const newPositionX = cache.lastPositionX + centerRelationX - window.innerWidth / 2;
+	const newPositionY = cache.lastPositionY + centerRelationY - window.innerHeight / 2;
+
+	const newPositionFlippedX = cache.lastPositionFlippedX + centerRelationFlippedX + window.innerWidth / 2;
+	const newPositionFlippedY = cache.lastPositionFlippedY + centerRelationFlippedY + window.innerHeight / 2;
+
+	cache.lastPositionX = newPositionX;
+	cache.lastPositionY = newPositionY;
+	cache.lastPositionFlippedY = newPositionFlippedX;
+	cache.lastPositionFlippedX = newPositionFlippedY;
+
+	//change background-color to rothko-color
+	var center = document.querySelectorAll(".center");
+	for (var i = 0; i < center.length; i++) {
+		center[i].style.color = backgroundColor;
+	}
+	document.body.style.setProperty('background-color', backgroundColor);
+	//convert hex to HSL
+	const hsla = hexToHSL(themeColor);
+	const amplitude = Math.max(...frequencyBuffer);
+	//scale amplitude
+	const ampScale = amplitude * (1 / 255);
+	//filter out noise
+	let filter = 1;
+	let alphaAmplitude = 0;
+
+	if (amplitude > 80) {
+		alphaAmplitude = ampScale;
+		filter = 1;
+	}
+	if (amplitude <= 80) {
+		alphaAmplitude = ampScale * 0.01;
+		filter = 0;
+	}
+
+	const normalizedFrequency = indexOfMax(frequencyBuffer) / analyser.fftSize;
+	const h = hsla[0] + (Math.round(360 * normalizedFrequency) * 10);
+	const colorAmplitude = Math.round(-amplitude) * filter;
+	const colorL = Math.abs((colorAmplitude) * (80 / 255) + 100).toFixed(2) + '%';
+	const colorLShadow = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.8).toFixed(2) + '%';
+	const colorLBackground = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.6).toFixed(2) + '%';
+	const colorLBackgroundShadow = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.5).toFixed(2) + '%';
+	const colorS = Math.abs((colorAmplitude) * (10 / 255) + 100).toFixed(2) + '%';
+	const color = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorL})`;
+	const colorShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLShadow})`;
+	const colorBackground = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackground})`;
+	const colorBackgroundShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackgroundShadow})`;
+	const colorBackground2 = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackground})`;
+	const colorBackgroundShadow2 = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackgroundShadow})`;
+
+	const alpha = alphaAmplitude;
+
+	ctx.globalAlpha = alpha;
+	ctx.lineCap = 'round';
+	ctx.lineJoin = 'butt';
+	const multiplier = (canvas.height + canvas.width) * 0.01;
+	const number = 35;
+	const halfNumber = number * 0.5;
+
+	const relationToCenterX = newPositionX / canvas.width;
+	const relationToCenterFlippedX = newPositionFlippedX / canvas.width;
+	let offset = relationToCenterX;
+	if (relationToCenterX > 1) {
+		offset = 2 - relationToCenterX;
+	}
+	for (var i = 0; i < canvas.width / number * 2 + 1; i++) {
+		for (var l = 0; l < canvas.height / number * 2 + 1; l++) {
+			ctx.strokeStyle = color;
+			ctx.lineWidth = ampScale * multiplier * 0.3;
+			ctx.beginPath();
+			ctx.moveTo(0 + (number * i) + newPositionX, newPositionY + (number * l) - canvas.height + centerY);
+			ctx.bezierCurveTo(0 + (number * i) + newPositionX * 0.8, newPositionY * 1.2 + (number * l) - canvas.height + centerY, 0 + (number * i) + newPositionX * 1.2, newPositionY * 0.8 + (number * l) - canvas.height + centerY, 0 + (number * i) + newPositionX, newPositionY + (number * l) - canvas.height + centerY);
+			ctx.stroke();
+			ctx.strokeStyle = colorShadow;
+			ctx.moveTo(canvas.width - ((number * i) + newPositionX - halfNumber), canvas.height - ((number * l) + newPositionY - halfNumber * 2) + canvas.height - centerY);
+			ctx.bezierCurveTo(canvas.width - ((number * i) + newPositionX * 0.8 - halfNumber), canvas.height - ((number * l) + newPositionY * 1.2 - halfNumber * 2) + canvas.height - centerY, canvas.width - ((number * i) + newPositionX * 1.2 - halfNumber), canvas.height - ((number * l) + newPositionY * 0.8 - halfNumber * 2) + canvas.height - centerY, canvas.width - ((number * i) + newPositionX - halfNumber), canvas.height - ((number * l) + newPositionY - halfNumber * 2) + canvas.height - centerY);
+			ctx.stroke();
+		}
+	}
+};
+
+export const rope = ({
+	canvas,
+	ctx,
+	frequencyBuffer,
+	analyser,
+	themeColor,
+	backgroundColor,
+	mousePosition,
+	centerX,
+	centerY,
+	cache
+}) => {
+	// Set initial values first
+	if (cache === undefined) {
+		cache = {};
+		cache.lastPositionX = 0;
+		cache.lastPositionY = 0;
+		cache.lastPositionFlippedY = centerY;
+		cache.lastPositionFlippedX = centerX;
+	}
+
+	const centerRelationX = mousePosition.x - 1;
+	const centerRelationY = mousePosition.y;
+
+	const centerRelationFlippedX = 1 - mousePosition.x;
+	const centerRelationFlippedY = 1 - mousePosition.y;
+
+	const newPositionX = cache.lastPositionX + centerRelationX - window.innerWidth / 2;
+	const newPositionY = cache.lastPositionY + centerRelationY - window.innerHeight / 2;
+
+	const newPositionFlippedX = cache.lastPositionFlippedX + centerRelationFlippedX + window.innerWidth / 2;
+	const newPositionFlippedY = cache.lastPositionFlippedY + centerRelationFlippedY + window.innerHeight / 2;
+
+	cache.lastPositionX = newPositionX;
+	cache.lastPositionY = newPositionY;
+	cache.lastPositionFlippedY = newPositionFlippedX;
+	cache.lastPositionFlippedX = newPositionFlippedY;
+
+	//change background-color to rothko-color
+	var center = document.querySelectorAll(".center");
+	for (var i = 0; i < center.length; i++) {
+		center[i].style.color = backgroundColor;
+	}
+	document.body.style.setProperty('background-color', backgroundColor);
+	//convert hex to HSL
+	const hsla = hexToHSL(themeColor);
+	const amplitude = Math.max(...frequencyBuffer);
+	//scale amplitude
+	const ampScale = amplitude * (1 / 255);
+	//filter out noise
+	let filter = 1;
+	let alphaAmplitude = 0;
+
+	if (amplitude > 80) {
+		alphaAmplitude = ampScale;
+		filter = 1;
+	}
+	if (amplitude <= 80) {
+		alphaAmplitude = ampScale * 0.01;
+		filter = 0;
+	}
+
+	const normalizedFrequency = indexOfMax(frequencyBuffer) / analyser.fftSize;
+	const h = hsla[0] + (Math.round(360 * normalizedFrequency) * 10);
+	const colorAmplitude = Math.round(-amplitude) * filter;
+	const colorL = Math.abs((colorAmplitude) * (80 / 255) + 100).toFixed(2) + '%';
+	const colorLShadow = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.8).toFixed(2) + '%';
+	const colorLBackground = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.6).toFixed(2) + '%';
+	const colorLBackgroundShadow = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.5).toFixed(2) + '%';
+	const colorS = Math.abs((colorAmplitude) * (10 / 255) + 100).toFixed(2) + '%';
+	const color = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorL})`;
+	const colorShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLShadow})`;
+	const colorBackground = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackground})`;
+	const colorBackgroundShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackgroundShadow})`;
+	const colorBackground2 = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackground})`;
+	const colorBackgroundShadow2 = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackgroundShadow})`;
+
+	const alpha = alphaAmplitude;
+
+	ctx.globalAlpha = alpha;
+	ctx.lineCap = 'round';
+	ctx.lineJoin = 'butt';
+	const multiplier = (canvas.height + canvas.width) * 0.01;
+	const number = 40;
+	const xPostLength = number * 2;
+	let colorPicker = color;
+	const halfNumber = number * 0.5;
+
+	const relationToCenterX = newPositionX / centerX;
+	const relationToCenterFlippedX = newPositionFlippedX / canvas.width;
+	let offset = relationToCenterX;
+	if (relationToCenterX > 1) {
+		offset = 2 - relationToCenterX;
+	}
+	for (var i = 0; i < canvas.width / number * 2 + 1; i++) {
+		for (var l = 0; l < canvas.height / number; l++) {
+			ctx.lineWidth = ampScale * multiplier * 0.3;
+			ctx.strokeStyle = colorBackground;
+			ctx.moveTo(number * i, 0 + ((number * l) + newPositionY * 2) - canvas.height + centerY);
+			ctx.lineTo(number * i, 0 + ((number * l) + newPositionY * 2) - canvas.height + centerY + halfNumber);
+			ctx.stroke();
+			ctx.strokeStyle = colorBackgroundShadow;
+			ctx.moveTo((number * i) + halfNumber, canvas.height - ((number * l) + newPositionY * 2) + canvas.height - centerY);
+			ctx.lineTo((number * i) + halfNumber, canvas.height - ((number * l) + newPositionY * 2) - halfNumber + canvas.height - centerY);
+			ctx.stroke();
+			
+			ctx.lineWidth = ampScale * multiplier;
+			ctx.strokeStyle = color;
+			ctx.beginPath();
+			ctx.moveTo(0 + ((number * i) + newPositionX * 2) - canvas.width + centerX, (number * l));
+			ctx.lineTo(0 + ((number * i) + newPositionX * 2) - canvas.width + centerX + halfNumber, (number * l));
+			ctx.stroke();
+			ctx.strokeStyle = colorShadow;
+			ctx.moveTo(canvas.width - ((number * i) + newPositionX * 2) + canvas.width - centerX, (number * l) + halfNumber);
+			ctx.lineTo(canvas.width - ((number * i) + newPositionX * 2) - halfNumber + canvas.width - centerX, (number * l) + halfNumber);
+			ctx.stroke();
+		}
+	}
+};
+
+export const carpetPattern = ({
+	canvas,
+	ctx,
+	frequencyBuffer,
+	analyser,
+	themeColor,
+	backgroundColor,
+	mousePosition,
+	centerX,
+	centerY,
+	cache
+}) => {
+	// Set initial values first
+	if (cache === undefined) {
+		cache = {};
+		cache.lastPositionX = 0;
+		cache.lastPositionY = 0;
+		cache.lastPositionFlippedY = centerY;
+		cache.lastPositionFlippedX = centerX;
+	}
+
+	const centerRelationX = mousePosition.x - 1;
+	const centerRelationY = mousePosition.y;
+
+	const centerRelationFlippedX = 1 - mousePosition.x;
+	const centerRelationFlippedY = 1 - mousePosition.y;
+
+	const newPositionX = cache.lastPositionX + centerRelationX - window.innerWidth / 2;
+	const newPositionY = cache.lastPositionY + centerRelationY - window.innerHeight / 2;
+
+	const newPositionFlippedX = cache.lastPositionFlippedX + centerRelationFlippedX + window.innerWidth / 2;
+	const newPositionFlippedY = cache.lastPositionFlippedY + centerRelationFlippedY + window.innerHeight / 2;
+
+	cache.lastPositionX = newPositionX;
+	cache.lastPositionY = newPositionY;
+	cache.lastPositionFlippedY = newPositionFlippedX;
+	cache.lastPositionFlippedX = newPositionFlippedY;
+
+	//change background-color to rothko-color
+	var center = document.querySelectorAll(".center");
+	for (var i = 0; i < center.length; i++) {
+		center[i].style.color = backgroundColor;
+	}
+	document.body.style.setProperty('background-color', backgroundColor);
+	//convert hex to HSL
+	const hsla = hexToHSL(themeColor);
+	const amplitude = Math.max(...frequencyBuffer);
+	//scale amplitude
+	const ampScale = amplitude * (1 / 255);
+	//filter out noise
+	let filter = 1;
+	let alphaAmplitude = 0;
+
+	if (amplitude > 80) {
+		alphaAmplitude = ampScale;
+		filter = 1;
+	}
+	if (amplitude <= 80) {
+		alphaAmplitude = ampScale * 0.01;
+		filter = 0;
+	}
+
+	const normalizedFrequency = indexOfMax(frequencyBuffer) / analyser.fftSize;
+	const h = hsla[0] + (Math.round(360 * normalizedFrequency) * 10);
+	const colorAmplitude = Math.round(-amplitude) * filter;
+	const colorL = Math.abs((colorAmplitude) * (80 / 255) + 100).toFixed(2) + '%';
+	const colorLShadow = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.8).toFixed(2) + '%';
+	const colorLBackground = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.6).toFixed(2) + '%';
+	const colorLBackgroundShadow = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.5).toFixed(2) + '%';
+	const colorS = Math.abs((colorAmplitude) * (10 / 255) + 100).toFixed(2) + '%';
+	const color = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorL})`;
+	const colorShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLShadow})`;
+	const colorBackground = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackground})`;
+	const colorBackgroundShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackgroundShadow})`;
+	const colorBackground2 = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackground})`;
+	const colorBackgroundShadow2 = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackgroundShadow})`;
+
+	const alpha = alphaAmplitude;
+
+	ctx.globalAlpha = alpha;
+	ctx.lineCap = 'round';
+	ctx.lineJoin = 'miter';
+	const multiplier = (canvas.height + canvas.width) * 0.01;
+	const number = 30;
+	const xPostLength = number * 2;
+	let colorPicker = color;
+	const halfNumber = number * 0.5;
+
+	const relationToWidth = (newPositionX / canvas.width + newPositionY / canvas.width) / 2;
+	const relationToCenterFlippedX = newPositionFlippedX / canvas.width;
+	let offset = relationToWidth;
+	if (relationToWidth > 1) {
+		offset = 2 - relationToWidth;
+	}
+	for (var i = 0; i < canvas.width / number * 2 + 1; i++) {
+		for (var l = 0; l < canvas.height / number; l++) {
+			ctx.strokeStyle = color;
+			ctx.lineWidth = ampScale * multiplier * 0.2;
+			ctx.beginPath();
+			ctx.moveTo(0 + ((number * i) + canvas.width * relationToWidth) - canvas.width + centerX, (number * l) + canvas.height * relationToWidth);
+			ctx.lineTo(0 + ((number * i) + canvas.width * relationToWidth) - canvas.width + centerX + halfNumber, (number * l) + halfNumber + canvas.height * relationToWidth);
+			ctx.moveTo(0 + ((number * i) + canvas.width * relationToWidth) - canvas.width + centerX, canvas.height - ((number * l) + canvas.height * relationToWidth));
+			ctx.lineTo(0 + ((number * i) + canvas.width * relationToWidth) - canvas.width + centerX + halfNumber, canvas.height - ((number * l) + halfNumber + canvas.height * relationToWidth));
+			// ctx.stroke();
+			ctx.strokeStyle = colorShadow;
+			ctx.moveTo(canvas.width - ((number * i) + canvas.width * relationToWidth) + canvas.width - centerX, (number * l) + halfNumber + canvas.height * relationToWidth);
+			ctx.lineTo(canvas.width - ((number * i) + canvas.width * relationToWidth) - halfNumber + canvas.width - centerX, (number * l) + number + canvas.height * relationToWidth);
+			ctx.stroke();
+			ctx.moveTo(canvas.width - ((number * i) + canvas.width * relationToWidth) + canvas.width - centerX, canvas.height - ((number * l) + halfNumber + canvas.height * relationToWidth));
+			ctx.lineTo(canvas.width - ((number * i) + canvas.width * relationToWidth) - halfNumber + canvas.width - centerX, canvas.height - ((number * l) + number + canvas.height * relationToWidth));
+			ctx.stroke();
+		}
+	}
+};
+
+export const carpetPattern2 = ({
+	canvas,
+	ctx,
+	frequencyBuffer,
+	analyser,
+	themeColor,
+	backgroundColor,
+	mousePosition,
+	centerX,
+	centerY,
+	cache
+}) => {
+	// Set initial values first
+	if (cache === undefined) {
+		cache = {};
+		cache.lastPositionX = 0;
+		cache.lastPositionY = 0;
+		cache.lastPositionFlippedY = centerY;
+		cache.lastPositionFlippedX = centerX;
+	}
+
+	const centerRelationX = mousePosition.x - 1;
+	const centerRelationY = mousePosition.y;
+
+	const centerRelationFlippedX = 1 - mousePosition.x;
+	const centerRelationFlippedY = 1 - mousePosition.y;
+
+	const newPositionX = cache.lastPositionX + centerRelationX - window.innerWidth / 2;
+	const newPositionY = cache.lastPositionY + centerRelationY - window.innerHeight / 2;
+
+	const newPositionFlippedX = cache.lastPositionFlippedX + centerRelationFlippedX + window.innerWidth / 2;
+	const newPositionFlippedY = cache.lastPositionFlippedY + centerRelationFlippedY + window.innerHeight / 2;
+
+	cache.lastPositionX = newPositionX;
+	cache.lastPositionY = newPositionY;
+	cache.lastPositionFlippedY = newPositionFlippedX;
+	cache.lastPositionFlippedX = newPositionFlippedY;
+
+	//change background-color to rothko-color
+	var center = document.querySelectorAll(".center");
+	for (var i = 0; i < center.length; i++) {
+		center[i].style.color = backgroundColor;
+	}
+	document.body.style.setProperty('background-color', backgroundColor);
+	//convert hex to HSL
+	const hsla = hexToHSL(themeColor);
+	const amplitude = Math.max(...frequencyBuffer);
+	//scale amplitude
+	const ampScale = amplitude * (1 / 255);
+	//filter out noise
+	let filter = 1;
+	let alphaAmplitude = 0;
+
+	if (amplitude > 80) {
+		alphaAmplitude = ampScale;
+		filter = 1;
+	}
+	if (amplitude <= 80) {
+		alphaAmplitude = ampScale * 0.01;
+		filter = 0;
+	}
+
+	const normalizedFrequency = indexOfMax(frequencyBuffer) / analyser.fftSize;
+	const h = hsla[0] + (Math.round(360 * normalizedFrequency) * 10);
+	const colorAmplitude = Math.round(-amplitude) * filter;
+	const colorL = Math.abs((colorAmplitude) * (80 / 255) + 100).toFixed(2) + '%';
+	const colorLShadow = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.8).toFixed(2) + '%';
+	const colorLBackground = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.6).toFixed(2) + '%';
+	const colorLBackgroundShadow = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.5).toFixed(2) + '%';
+	const colorS = Math.abs((colorAmplitude) * (10 / 255) + 100).toFixed(2) + '%';
+	const color = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorL})`;
+	const colorShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLShadow})`;
+	const colorBackground = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackground})`;
+	const colorBackgroundShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackgroundShadow})`;
+	const colorBackground2 = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackground})`;
+	const colorBackgroundShadow2 = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackgroundShadow})`;
+
+	const alpha = alphaAmplitude;
+
+	ctx.globalAlpha = alpha;
+	ctx.lineCap = 'round';
+	ctx.lineJoin = 'miter';
+	const multiplier = (canvas.height + canvas.width) * 0.01;
+	const number = 30;
+	const xPostLength = number * 2;
+	let colorPicker = color;
+	const halfNumber = number * 0.5;
+
+	const relationToWidth = (newPositionX / canvas.width + newPositionY / canvas.width) / 2;
+	const relationToCenterFlippedX = newPositionFlippedX / canvas.width;
+	let offset = relationToWidth;
+	if (relationToWidth > 1) {
+		offset = 2 - relationToWidth;
+	}
+	for (var i = 0; i < canvas.width / number * 2 + 1; i++) {
+		for (var l = 0; l < canvas.height / number; l++) {
+			ctx.strokeStyle = color;
+			ctx.lineWidth = ampScale * multiplier * 0.2;
+			ctx.beginPath();
+			ctx.moveTo(0 + ((number * i) + canvas.width * relationToWidth) - canvas.width + centerX, (number * l) + canvas.height * relationToWidth);
+			ctx.lineTo(0 + ((number * i) + canvas.width * relationToWidth) - canvas.width + centerX + halfNumber, (number * l) + halfNumber + canvas.height * relationToWidth);
+			ctx.moveTo(0 + ((number * i) + canvas.width * relationToWidth) - canvas.width + centerX, canvas.height - ((number * l) + canvas.height * relationToWidth));
+			ctx.lineTo(0 + ((number * i) + canvas.width * relationToWidth) - canvas.width + centerX + halfNumber, canvas.height - ((number * l) + halfNumber + canvas.height * relationToWidth));
+			// ctx.stroke();
+			ctx.strokeStyle = colorShadow;
+			ctx.moveTo(canvas.width - ((number * i) + canvas.width * relationToWidth) + canvas.width - centerX, (number * l) + halfNumber + canvas.height * relationToWidth);
+			ctx.lineTo(canvas.width - ((number * i) + canvas.width * relationToWidth) - halfNumber + canvas.width - centerX, (number * l) + number + canvas.height * relationToWidth);
+			ctx.stroke();
+			ctx.moveTo(canvas.width - ((number * i) + canvas.width * relationToWidth) + canvas.width - centerX, canvas.height - ((number * l) + halfNumber + canvas.height * relationToWidth));
+			ctx.lineTo(canvas.width - ((number * i) + canvas.width * relationToWidth) - halfNumber + canvas.width - centerX, canvas.height - ((number * l) + number + canvas.height * relationToWidth));
+			ctx.stroke();
+		}
+	}
+};
+
+export const vis8 = ({
+	canvas,
+	ctx,
+	frequencyBuffer,
+	analyser,
+	themeColor,
+	backgroundColor,
+	mousePosition,
+	centerX,
+	centerY,
+	cache
+}) => {
+	// Set initial values first
+	if (cache === undefined) {
+		cache = {};
+		cache.lastPositionX = 0;
+		cache.lastPositionY = 0;
+		cache.lastPositionFlippedY = centerY;
+		cache.lastPositionFlippedX = centerX;
+	}
+
+	const centerRelationX = mousePosition.x - 1;
+	const centerRelationY = mousePosition.y;
+
+	const centerRelationFlippedX = 1 - mousePosition.x;
+	const centerRelationFlippedY = 1 - mousePosition.y;
+
+	const newPositionX = cache.lastPositionX + centerRelationX - window.innerWidth / 2;
+	const newPositionY = cache.lastPositionY + centerRelationY - window.innerHeight / 2;
+
+	const newPositionFlippedX = cache.lastPositionFlippedX + centerRelationFlippedX + window.innerWidth / 2;
+	const newPositionFlippedY = cache.lastPositionFlippedY + centerRelationFlippedY + window.innerHeight / 2;
+
+	cache.lastPositionX = newPositionX;
+	cache.lastPositionY = newPositionY;
+	cache.lastPositionFlippedY = newPositionFlippedX;
+	cache.lastPositionFlippedX = newPositionFlippedY;
+
+	//change background-color to rothko-color
+	var center = document.querySelectorAll(".center");
+	for (var i = 0; i < center.length; i++) {
+		center[i].style.color = backgroundColor;
+	}
+	document.body.style.setProperty('background-color', backgroundColor);
+	//convert hex to HSL
+	const hsla = hexToHSL(themeColor);
+	const amplitude = Math.max(...frequencyBuffer);
+	//scale amplitude
+	const ampScale = amplitude * (1 / 255);
+	//filter out noise
+	let filter = 1;
+	let alphaAmplitude = 0;
+
+	if (amplitude > 80) {
+		alphaAmplitude = ampScale;
+		filter = 1;
+	}
+	if (amplitude <= 80) {
+		alphaAmplitude = ampScale * 0.01;
+		filter = 0;
+	}
+
+	const normalizedFrequency = indexOfMax(frequencyBuffer) / analyser.fftSize;
+	const h = hsla[0] + (Math.round(360 * normalizedFrequency) * 10);
+	const colorAmplitude = Math.round(-amplitude) * filter;
+	const colorL = Math.abs((colorAmplitude) * (80 / 255) + 100).toFixed(2) + '%';
+	const colorLShadow = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.8).toFixed(2) + '%';
+	const colorLBackground = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.6).toFixed(2) + '%';
+	const colorLBackgroundShadow = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.5).toFixed(2) + '%';
+	const colorS = Math.abs((colorAmplitude) * (10 / 255) + 100).toFixed(2) + '%';
+	const color = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorL})`;
+	const colorShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLShadow})`;
+	const colorBackground = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackground})`;
+	const colorBackgroundShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackgroundShadow})`;
+	const colorBackground2 = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackground})`;
+	const colorBackgroundShadow2 = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackgroundShadow})`;
+
+	const alpha = alphaAmplitude;
+
+	ctx.globalAlpha = alpha;
+	ctx.lineCap = 'round';
+	ctx.lineJoin = 'butt';
+	const multiplier = (canvas.height + canvas.width) / 100;
+	const number = 20;
+	const xPostLength = number * 2;
+	let colorPicker = color;
+
+	const relationToCenterX = newPositionX / canvas.width;
+	const relationToCenterFlippedX = newPositionFlippedX / canvas.width;
+	let offset = relationToCenterX;
+	let offsetFlipped = relationToCenterFlippedX;
+	let offsetFlip = -relationToCenterX + 1;
+	if (relationToCenterX > 1) {
+		offset = 2 - relationToCenterX;
+	}
+	console.log(offset);
+	const randomNumber = random(0, canvas.width / number / 10);
+	for (var i = 0; i < canvas.width / number * 2 + 1; i++) {
+		for (var l = 0; l < canvas.height / number * 2; l++) {
+			if (i % 2 == 1) {
+				colorPicker = color;
+			}
+			if (i % 2 == 0) {
+				colorPicker = colorBackgroundShadow2;
+			}
+			ctx.strokeStyle = colorPicker;
+			ctx.lineWidth = ampScale * multiplier / 2;
+			ctx.beginPath();
+			// ctx.moveTo(((i+1) * number * offset), number / 2 * l);
+			// ctx.lineTo(((i+1) * number * offset) + number / 4, number / 2 * l);
+			ctx.moveTo(0 + (number * i) + newPositionX - canvas.width + canvas.width / 2, newPositionY + (number * l) - canvas.height + canvas.height / 2);
+			ctx.lineTo(0 + (number * i) + newPositionX - canvas.width + canvas.width / 2, newPositionY + (number * l) - canvas.height + canvas.height / 2);
+			//ctx.moveTo(canvas.width - ((i + 1) * number * (1 - offset + 1)), number / 2 * l);
+			//ctx.lineTo(canvas.width - ((i + 1) * number * (1 - offset + 1)) + number / 4, number / 2 * l);
+
+			// ctx.moveTo(canvas.width - i * number * offset, number / 2 * l + number/4*l);
+			// ctx.lineTo(canvas.width - i * number + newPositionX + number / 4 * offset, number / 2 * l + number/4*l);
+			// ctx.moveTo(i * number * (1-offset+1), number / 2 * l+ number/4*l);
+			// ctx.lineTo(i * number + number / 4 * (1-offset+1), number / 2 * l+ number/4*l);
+			// ctx.moveTo(i + number/2 * number / offset, number / 2 * l);
+			// ctx.lineTo(i + number/2 * number + newPositionX + number / 2 / offset, number / 2 * l);
+			// ctx.moveTo(canvas.width - i + number/2 * number * offset, number / 2 * l);
+			// ctx.lineTo(canvas.width - i + number/2 * number + number / 2 / offset, number / 2 * l);
+			ctx.stroke();
+		}
+	}
+};
+
 
 export const carpet2P = ({
 	canvas,
@@ -1113,6 +1931,129 @@ export const carpet2P = ({
 		ctx.stroke();
 	}
 };
+
+export const carpet4P = ({
+	canvas,
+	ctx,
+	frequencyBuffer,
+	analyser,
+	themeColor,
+	backgroundColor,
+	mousePosition,
+	centerX,
+	centerY,
+	cache
+}) => {
+	// Set initial values first
+	if (cache === undefined) {
+		cache = {};
+		cache.lastPositionX = centerX;
+		cache.lastPositionY = centerY;
+		cache.lastPositionFlippedY = centerY;
+		cache.lastPositionFlippedX = centerX;
+	}
+
+	const mouseX = mousePosition.x / window.innerWidth;
+	const mouseY = mousePosition.y / window.innerHeight;
+
+	const centerRelationX = mousePosition.x - 1;
+	const centerRelationY = mousePosition.y;
+
+	const centerRelationFlippedX = 1 - mousePosition.x;
+	const centerRelationFlippedY = 1 - mousePosition.y;
+
+	const newPositionX = cache.lastPositionX + centerRelationX - window.innerWidth / 2;
+	const newPositionY = cache.lastPositionY + centerRelationY - window.innerHeight / 2;
+
+	const newPositionFlippedX = cache.lastPositionFlippedX + centerRelationFlippedX + window.innerWidth / 2;
+	const newPositionFlippedY = cache.lastPositionFlippedY + centerRelationFlippedY + window.innerHeight / 2;
+
+	cache.lastPositionX = newPositionX;
+	cache.lastPositionY = newPositionY;
+	cache.lastPositionFlippedY = newPositionFlippedX;
+	cache.lastPositionFlippedX = newPositionFlippedY;
+
+	//change background-color to rothko-color
+	var center = document.querySelectorAll(".center");
+	for (var i = 0; i < center.length; i++) {
+		center[i].style.color = backgroundColor;
+	}
+	document.body.style.setProperty('background-color', backgroundColor);
+	//convert hex to HSL
+	const hsla = hexToHSL(themeColor);
+	const amplitude = Math.max(...frequencyBuffer);
+	//scale amplitude
+	const ampScale = amplitude * (1 / 255);
+	//filter out noise
+	let filter = 1;
+	let alphaAmplitude = 0;
+
+	if (amplitude > 80) {
+		alphaAmplitude = ampScale;
+		filter = 1;
+	}
+	if (amplitude <= 80) {
+		alphaAmplitude = ampScale * 0.01;
+		filter = 0;
+	}
+
+	const normalizedFrequency = indexOfMax(frequencyBuffer) / analyser.fftSize;
+	const h = hsla[0] + (Math.round(360 * normalizedFrequency) * 10);
+	const colorAmplitude = Math.round(-amplitude) * filter;
+	const colorL = Math.abs((colorAmplitude) * (80 / 255) + 100).toFixed(2) + '%';
+	const colorLShadow = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.80).toFixed(2) + '%';
+	const colorS = Math.abs((colorAmplitude) * (10 / 255) + 100).toFixed(2) + '%';
+	const color = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorL})`;
+	const colorShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLShadow})`;
+
+	const alpha = alphaAmplitude;
+
+	const diameter = amplitude * 2;
+	const side = Math.sqrt((diameter * diameter) / 2);
+	ctx.fillStyle = color;
+	ctx.globalAlpha = alpha;
+	ctx.lineCap = 'round';
+	ctx.lineJoin = 'butt';
+	ctx.lineWidth = ampScale * 1;
+	const ampMult = (canvas.width + canvas.height) / 1000;
+	const multiplier = 600;
+	const divider = ampMult * multiplier * 2;
+	//try rotating maybe?
+	console.log('canvas.width ' + canvas.width + ' canvas height ' + canvas.height)
+	for (var mh = 0; mh < canvas.height / divider; mh++) {
+		for (var mw = 0; mw < canvas.width / divider; mw++) {
+			for (var i = 0; i < canvas.height; i++) {
+				const newPos2H = canvas.height - 2.5 * i;
+				const newPosH = 1.25 + canvas.height - 2.5 * i;
+				ctx.strokeStyle = colorShadow;
+				ctx.beginPath();
+				ctx.moveTo(newPositionX + ampMult * ampScale + mw * divider, newPosH + ampMult * ampScale + mh * divider);
+				ctx.bezierCurveTo(newPositionX + ampMult * multiplier + mw * divider, newPosH + mh * divider, newPositionX + mw * divider, newPosH + mh * divider, newPositionX + mw * divider, newPosH + mh * divider);
+				ctx.stroke();
+				ctx.strokeStyle = color;
+				ctx.moveTo(newPositionFlippedX - ampMult * ampScale - mw * divider, newPos2H + ampMult * ampScale - mh * divider);
+				ctx.bezierCurveTo(newPositionFlippedX - ampMult * multiplier - mw * divider, newPos2H - mh * divider, newPositionFlippedX - mw * divider, newPos2H - mh * divider, newPositionFlippedX - mw * divider, newPos2H - mh * divider);
+				ctx.stroke();
+			}
+			for (var i = 0; i < canvas.width; i++) {
+				const newPosW = 1.25 + canvas.width - 2.5 * i;
+				const newPos2W = canvas.width - 2.5 * i;
+				ctx.strokeStyle = colorShadow;
+				ctx.beginPath();
+				ctx.moveTo(newPosW + ampMult * ampScale + mw * divider, newPositionY + ampMult * ampScale + mh * divider);
+				ctx.bezierCurveTo(newPosW + mw * divider, newPositionY + ampMult * multiplier + mh * divider, newPosW + mw * divider, newPositionY + mh * divider, newPosW + mw * divider, newPositionY + mh * divider);
+				ctx.stroke();
+
+				ctx.strokeStyle = color;
+				ctx.beginPath();
+				ctx.moveTo(newPos2W + ampMult * ampScale - mw * divider, newPositionFlippedY - ampMult * ampScale - mh * divider);
+				ctx.bezierCurveTo(newPos2W - mw * divider, newPositionFlippedY - ampMult * multiplier - mh * divider, newPos2W - mw * divider, newPositionFlippedY - mh * divider, newPos2W - mw * divider, newPositionFlippedY - mh * divider);
+				ctx.stroke();
+			}
+		}
+	}
+};
+
 
 export const carpetCentre = ({
 	canvas,

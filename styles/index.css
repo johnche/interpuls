@@ -27,6 +27,12 @@ body {
 	font-family: 'Bely';
 	font-size: 20px;
 }
+#control-buttons {
+	position: absolute;
+	top: 2vh;
+	right: 2vh;
+	z-index: 999;
+}
 canvas {
 	position: absolute;
 	top: 0;

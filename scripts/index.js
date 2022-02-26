@@ -10,9 +10,10 @@ const main = async () => {
 
 	const htmlElements = {
 		canvas,
-		progressBar: document.getElementById("progressBar"),
-		visualizer: document.getElementById("visualizer")
-	}
+		progressBar: document.getElementById('progressBar'),
+		styleButton: document.getElementById('control-style'),
+		colorButton: document.getElementById('control-color'),
+	};
 
 	const res = await fetch('/media.php');
 	const mediaData = await res.json()

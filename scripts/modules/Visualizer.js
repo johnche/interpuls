@@ -49,7 +49,8 @@ export default class Visualizer {
 			centerY,
 		};
 
-		htmlElements.visualizer.addEventListener('click', this.updateVisualizer);
+		htmlElements.styleButton.addEventListener('click', this.updateVisualizer);
+		htmlElements.colorButton.addEventListener('click', this.updateColorTheme);
 		document.addEventListener('mousemove', this.handleMouseEvent);
 		document.addEventListener('click', this.handleGlobalClick);
 	}

@@ -34,7 +34,8 @@ export default class Visualizer {
 			carpet2P,
 			carpet4P,
 			dot,
-			carpetCentre3
+			carpetCentre3,
+			vis1
 		], true);
 
 		this.visualizer = this.visualizerIterator.next().value;
@@ -112,6 +113,7 @@ export default class Visualizer {
 
 	updateColorTheme = () => {
 		const { colorList, background } = this.colorThemeIterator.next().value;
+		document.body.style.background = background;
 		this.currentColorsIterator = getIterator(colorList, true);
 		this.visualizerContext = {
 			...this.visualizerContext,

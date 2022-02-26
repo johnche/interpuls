@@ -68,7 +68,14 @@ export default class Visualizer {
 		//added button for fullscreen
 		htmlElements.fullscreenButton.addEventListener('click', this.openFullscreen);
 
-		document.addEventListener('keydown', this.updateVisualizer);
+		document.addEventListener('keydown', e => {
+			if (e.code === 'ArrowRight') {
+				this.updateVisualizer();
+			}
+			else if (e.code === 'ArrowLeft') {
+				this.updateColorTheme();
+			}
+		})
 
 		//Id like to update the visualizer as I am in fullscreen with a right arrow.. any ways I could call updateVisualizer()?
 		console.log(isTouchUnit);

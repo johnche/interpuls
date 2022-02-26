@@ -69,7 +69,7 @@ export default class FeldmanMachine {
 
 	getCurrentTrackPath = () =>  {
 		const category = this.state.current.category;
-		return `./assets/audio/${category}/${this.getDir(category)}/${this.getTrack(category)}.ogg`
+		return `./assets/audio/${category}/${this.getDir(category)}/${this.getTrack(category)}.wav`
 	};
 
 	setCategory = (newCategory) => {

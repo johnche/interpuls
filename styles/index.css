@@ -2,13 +2,35 @@ body {
 	background-color: #da5f05;
 	height: 100vh;
 	width: 100vw;
-	overflow: hidden;
+	overflow-x: hidden;
 	font-family: 'Bely';
 	font-size: 17px;
 }
 
 .leftTop#visualizer {
 	z-index: 9999;
+}
+.progressBarContainer {
+	z-index: 9999;
+}
+#textContainer {
+	position: absolute;
+	top: 98vh;
+
+	width: 100vw;
+	background-color: #da5f05;
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+}
+#textContainer > p {
+	font-family: 'Bely';
+	font-size: 20px;
+}
+canvas {
+	position: absolute;
+	top: 0;
+	left: 0;
 }
 
 	/* Dropdown Button */

@@ -721,9 +721,15 @@ export const vis1 = ({
 	const colorAmplitude = Math.round(-amplitude) * filter;
 	const colorL = Math.abs((colorAmplitude) * (80 / 255) + 100).toFixed(2) + '%';
 	const colorLShadow = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.80).toFixed(2) + '%';
+	const colorLBackground = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.6).toFixed(2) + '%';
+	const colorLBackgroundShadow = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.5).toFixed(2) + '%';
 	const colorS = Math.abs((colorAmplitude) * (10 / 255) + 100).toFixed(2) + '%';
 	const color = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorL})`;
 	const colorShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLShadow})`;
+	const colorBackground = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackground})`;
+	const colorBackgroundShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackgroundShadow})`;
+	const colorBackground2 = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackground})`;
+	const colorBackgroundShadow2 = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackgroundShadow})`;
 
 	const alpha = alphaAmplitude;
 
@@ -732,22 +738,35 @@ export const vis1 = ({
 	ctx.globalAlpha = alpha;
 	ctx.lineCap = 'round';
 	ctx.lineJoin = 'butt';
-	ctx.strokeStyle = colorShadow;
+	ctx.strokeStyle = color;
+	const divider = 10;
 
 	const multiplier = (canvas.width + canvas.height) / 100
-	ctx.lineWidth = ampScale * multiplier / 4;
+	ctx.lineWidth = ampScale * multiplier *0.25;
 	for (var i = 0; i < 8; i++) {
 		ctx.beginPath();
 		ctx.moveTo(newPositionX, multiplier * 0.75 + newPositionY - multiplier * i);
 		ctx.bezierCurveTo(newPositionX + multiplier * 5, multiplier * 0.75 + newPositionY - multiplier * i, newPositionX, multiplier * 0.75 + newPositionY - multiplier * i, newPositionX, multiplier * 0.75 + newPositionY - multiplier * i);
 		ctx.stroke();
 	}
+	for (var i = 0;i<canvas.height/divider+1;i++){
+		ctx.lineWidth = ampScale * multiplier *0.1 ;
+		ctx.strokeStyle = colorBackground;
+		ctx.beginPath();
+		ctx.moveTo(0, i*divider-10);
+		ctx.bezierCurveTo(canvas.width + newPositionX*0.1, i*divider+ newPositionY*0.1,canvas.width - newPositionX*0.1, i*divider - newPositionY*0.1,canvas.width, i*divider);
+		ctx.stroke();
+		ctx.strokeStyle = colorBackgroundShadow;
+		ctx.stroke();
+	}
 	for (var i = 0; i < 8; i++) {
+		ctx.strokeStyle = colorShadow;
 		ctx.beginPath();
 		ctx.moveTo(newPositionFlippedX, newPositionFlippedY - multiplier * 0.75 + (multiplier * i));
 		ctx.bezierCurveTo(newPositionFlippedX + multiplier * 5, newPositionFlippedY - multiplier * 0.75 + multiplier * i, newPositionFlippedX, newPositionFlippedY - multiplier * 0.75 + multiplier * i, newPositionFlippedX, newPositionFlippedY - multiplier * 0.75 + multiplier * i);
 		ctx.stroke();
 	}
+
 };
 
 export const vis4 = ({
@@ -1456,7 +1475,7 @@ export const rope = ({
 			ctx.moveTo((number * i) + halfNumber, canvas.height - ((number * l) + newPositionY * 2) + canvas.height - centerY);
 			ctx.lineTo((number * i) + halfNumber, canvas.height - ((number * l) + newPositionY * 2) - halfNumber + canvas.height - centerY);
 			ctx.stroke();
-			
+
 			ctx.lineWidth = ampScale * multiplier;
 			ctx.strokeStyle = color;
 			ctx.beginPath();
@@ -1559,7 +1578,7 @@ export const carpetPattern = ({
 	let colorPicker = color;
 	const halfNumber = number * 0.5;
 
-	const relationToWidth = (newPositionX / canvas.width + newPositionY / canvas.width) / 2;
+	const relationToWidth = newPositionX/ canvas.width/2;
 	const relationToCenterFlippedX = newPositionFlippedX / canvas.width;
 	let offset = relationToWidth;
 	if (relationToWidth > 1) {
@@ -1581,6 +1600,129 @@ export const carpetPattern = ({
 			ctx.stroke();
 			ctx.moveTo(canvas.width - ((number * i) + canvas.width * relationToWidth) + canvas.width - centerX, canvas.height - ((number * l) + halfNumber + canvas.height * relationToWidth));
 			ctx.lineTo(canvas.width - ((number * i) + canvas.width * relationToWidth) - halfNumber + canvas.width - centerX, canvas.height - ((number * l) + number + canvas.height * relationToWidth));
+			ctx.stroke();
+		}
+	}
+};
+
+export const carpetPattern3 = ({
+	canvas,
+	ctx,
+	frequencyBuffer,
+	analyser,
+	themeColor,
+	backgroundColor,
+	mousePosition,
+	centerX,
+	centerY,
+	cache
+}) => {
+	// Set initial values first
+	if (cache === undefined) {
+		cache = {};
+		cache.lastPositionX = 0;
+		cache.lastPositionY = 0;
+		cache.lastPositionFlippedY = centerY;
+		cache.lastPositionFlippedX = centerX;
+	}
+
+	const centerRelationX = mousePosition.x - 1;
+	const centerRelationY = mousePosition.y;
+
+	const centerRelationFlippedX = 1 - mousePosition.x;
+	const centerRelationFlippedY = 1 - mousePosition.y;
+
+	const newPositionX = cache.lastPositionX + centerRelationX - window.innerWidth / 2;
+	const newPositionY = cache.lastPositionY + centerRelationY - window.innerHeight / 2;
+
+	const newPositionFlippedX = cache.lastPositionFlippedX + centerRelationFlippedX + window.innerWidth / 2;
+	const newPositionFlippedY = cache.lastPositionFlippedY + centerRelationFlippedY + window.innerHeight / 2;
+
+	cache.lastPositionX = newPositionX;
+	cache.lastPositionY = newPositionY;
+	cache.lastPositionFlippedY = newPositionFlippedX;
+	cache.lastPositionFlippedX = newPositionFlippedY;
+
+	//change background-color to rothko-color
+	var center = document.querySelectorAll(".center");
+	for (var i = 0; i < center.length; i++) {
+		center[i].style.color = backgroundColor;
+	}
+	document.body.style.setProperty('background-color', backgroundColor);
+	//convert hex to HSL
+	const hsla = hexToHSL(themeColor);
+	const amplitude = Math.max(...frequencyBuffer);
+	//scale amplitude
+	const ampScale = amplitude * (1 / 255);
+	//filter out noise
+	let filter = 1;
+	let alphaAmplitude = 0;
+
+	if (amplitude > 80) {
+		alphaAmplitude = ampScale;
+		filter = 1;
+	}
+	if (amplitude <= 80) {
+		alphaAmplitude = ampScale * 0.01;
+		filter = 0;
+	}
+
+	const normalizedFrequency = indexOfMax(frequencyBuffer) / analyser.fftSize;
+	const h = hsla[0] + (Math.round(360 * normalizedFrequency) * 10);
+	const colorAmplitude = Math.round(-amplitude) * filter;
+	const colorL = Math.abs((colorAmplitude) * (80 / 255) + 100).toFixed(2) + '%';
+	const colorLShadow = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.8).toFixed(2) + '%';
+	const colorLBackground = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.6).toFixed(2) + '%';
+	const colorLBackgroundShadow = Math.abs((colorAmplitude) * (80 / 255) + 100 * 0.5).toFixed(2) + '%';
+	const colorS = Math.abs((colorAmplitude) * (10 / 255) + 100).toFixed(2) + '%';
+	const color = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorL})`;
+	const colorShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLShadow})`;
+	const colorBackground = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackground})`;
+	const colorBackgroundShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackgroundShadow})`;
+	const colorBackground2 = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackground})`;
+	const colorBackgroundShadow2 = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackgroundShadow})`;
+
+	const alpha = alphaAmplitude;
+
+	ctx.globalAlpha = alpha;
+	ctx.lineCap = 'round';
+	ctx.lineJoin = 'miter';
+	const multiplier = (canvas.height + canvas.width) * 0.01;
+	const number = 30;
+	const xPostLength = number * 2;
+	let colorPicker = color;
+	const halfNumber = number * 0.5;
+
+	const relationToWidth = ((mousePosition.x / canvas.width)+(mousePosition.y/canvas.height))/2;
+	const relationToCenterFlippedX = newPositionFlippedX / canvas.width;
+	let offset = relationToWidth;
+	if (relationToWidth > 1) {
+		offset = 2 - relationToWidth;
+	}
+	console.log(offset);
+	for (var i = 0; i < canvas.width / number * 2 + 1; i++) {
+		for (var l = 0; l < canvas.height / number; l++) {
+			ctx.strokeStyle = color;
+			ctx.lineWidth = ampScale * multiplier * 0.1;
+			ctx.beginPath();
+			ctx.moveTo(0 + ((number * i) + canvas.width * relationToWidth) - canvas.width + centerX, (number * l) + canvas.height * relationToWidth);
+			ctx.lineTo(0 + ((number * i) + canvas.width * relationToWidth) - canvas.width + centerX + halfNumber, (number * l) + halfNumber + canvas.height * relationToWidth);
+			ctx.moveTo(0 + ((number * i) + canvas.width * relationToWidth) - canvas.width + centerX, canvas.height - ((number * l) + canvas.height * relationToWidth));
+			ctx.lineTo(0 + ((number * i) + canvas.width * relationToWidth) - canvas.width + centerX + halfNumber, canvas.height - ((number * l) + halfNumber + canvas.height * relationToWidth));
+			ctx.moveTo((number * i), ((number * l) + canvas.height * relationToWidth));
+			ctx.lineTo(0 + (number * i), ((number * l) + halfNumber + canvas.height * relationToWidth));
+			ctx.moveTo((number * i) + canvas.width * relationToWidth, (number * l));
+			ctx.lineTo((number * i) + canvas.width * relationToWidth +halfNumber, (number * l));
+			// ctx.stroke();
+			ctx.strokeStyle = colorShadow;
+			ctx.moveTo(canvas.width - ((number * i) + canvas.width * relationToWidth) + canvas.width - centerX, (number * l) + halfNumber + canvas.height * relationToWidth);
+			ctx.lineTo(canvas.width - ((number * i) + canvas.width * relationToWidth) - halfNumber + canvas.width - centerX, (number * l) + number + canvas.height * relationToWidth);
+			ctx.moveTo(canvas.width - ((number * i) + canvas.width * relationToWidth) + canvas.width - centerX, canvas.height - ((number * l) + halfNumber + canvas.height * relationToWidth));
+			ctx.lineTo(canvas.width - ((number * i) + canvas.width * relationToWidth) - halfNumber + canvas.width - centerX, canvas.height - ((number * l) + number + canvas.height * relationToWidth));
+			ctx.moveTo((number * i)-halfNumber, canvas.height - ((number * l) + canvas.height * relationToWidth));
+			ctx.lineTo(0 + (number * i)-halfNumber, canvas.height - ((number * l) + halfNumber + canvas.height * relationToWidth));
+			ctx.moveTo(canvas.width-((number * i) + canvas.width * relationToWidth-halfNumber), (number * l));
+			ctx.lineTo(canvas.width-((number * i) + canvas.width * relationToWidth +halfNumber-halfNumber), (number * l));
 			ctx.stroke();
 		}
 	}

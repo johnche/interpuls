@@ -6,7 +6,10 @@ import {
 	carpet4P,
 	rope,
 	carpetPattern,
+	carpetPattern3,
 	dot,
+	carpetCentre3,
+	vis1,
 } from "./visualizers.js";
 import { getIterator, indexOfMax, shuffleArray } from "./utils.js";
 import { colors } from "../lib/colors.js";
@@ -21,7 +24,7 @@ export default class Visualizer {
 		const frequencyBuffer = new Uint8Array(analyser.frequencyBinCount);
 		const samplesBuffer = new Uint8Array(analyser.fftSize);
 
-		this.visualizerIterator = getIterator([vis3, vis5,vis7,carpetPattern,rope,carpet2P, carpet4P,dot], true);
+		this.visualizerIterator = getIterator([vis3, vis5,vis7,carpetPattern,carpetPattern3,rope,carpet2P, carpet4P,dot,carpetCentre3], true);
 		this.visualizer = this.visualizerIterator.next().value;
 		this.colorThemeIterator = getIterator(shuffleArray([...colors]), true);
 		const { colorList, background } = this.colorThemeIterator.next().value;

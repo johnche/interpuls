@@ -3,7 +3,7 @@ import { indexOfMax, hexToHSL, random } from "./utils.js";
 const setBackgroundColor = color => {
 	const center = document.querySelectorAll(".center");
 	center.forEach((_, i) => center[i].style.color = color);
-	document.body.style.setProperty('background-color', color);
+	canvas.style.setProperty('background-color', color);
 };
 
 export const bottomBars = ({ canvas, ctx, samplesBuffer, frequencyWidth }) => {
@@ -356,7 +356,7 @@ export const dot = ({
 	for (var i = 0; i < center.length; i++) {
 		center[i].style.color = backgroundColor;
 	}
-	document.body.style.setProperty('background-color', backgroundColor);
+	canvas.style.setProperty('background-color', backgroundColor);
 	//convert hex to HSL
 	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
@@ -486,7 +486,7 @@ export const rect = ({
 	for (var i = 0; i < center.length; i++) {
 		center[i].style.color = backgroundColor;
 	}
-	document.body.style.setProperty('background-color', backgroundColor);
+	canvas.style.setProperty('background-color', backgroundColor);
 	//convert hex to HSL
 	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
@@ -697,7 +697,7 @@ export const vis1 = ({
 	for (var i = 0; i < center.length; i++) {
 		center[i].style.color = backgroundColor;
 	}
-	document.body.style.setProperty('background-color', backgroundColor);
+	canvas.style.setProperty('background-color', backgroundColor);
 	//convert hex to HSL
 	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
@@ -814,11 +814,9 @@ export const vis4 = ({
 	for (var i = 0; i < center.length; i++) {
 		center[i].style.color = backgroundColor;
 	}
-	document.body.style.setProperty('background-color', backgroundColor);
+	canvas.style.setProperty('background-color', backgroundColor);
 	//convert hex to HSL
 	const colorArray = currentColorList['colorList'];
-	console.log(colorArray.length);
-
 
 	const amplitude = Math.max(...frequencyBuffer);
 	//scale amplitude
@@ -952,7 +950,7 @@ export const vis3 = ({
 	for (var i = 0; i < center.length; i++) {
 		center[i].style.color = backgroundColor;
 	}
-	document.body.style.setProperty('background-color', backgroundColor);
+	canvas.style.setProperty('background-color', backgroundColor);
 	//convert hex to HSL
 	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
@@ -1004,7 +1002,6 @@ export const vis3 = ({
 	if (relationToCenterX > 1) {
 		offset = 2 - relationToCenterX;
 	}
-	console.log(offset);
 	const randomNumber = random(0, canvas.width / number / 10);
 	for (var i = 0; i < canvas.width / number + 1; i++) {
 		for (var l = 0; l < canvas.height / number * 2; l++) {
@@ -1080,7 +1077,7 @@ export const vis5 = ({
 	for (var i = 0; i < center.length; i++) {
 		center[i].style.color = backgroundColor;
 	}
-	document.body.style.setProperty('background-color', backgroundColor);
+	canvas.style.setProperty('background-color', backgroundColor);
 	//convert hex to HSL
 	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
@@ -1195,7 +1192,7 @@ export const vis7 = ({
 	for (var i = 0; i < center.length; i++) {
 		center[i].style.color = backgroundColor;
 	}
-	document.body.style.setProperty('background-color', backgroundColor);
+	canvas.style.setProperty('background-color', backgroundColor);
 	//convert hex to HSL
 	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
@@ -1305,7 +1302,7 @@ export const vis10 = ({
 	for (var i = 0; i < center.length; i++) {
 		center[i].style.color = backgroundColor;
 	}
-	document.body.style.setProperty('background-color', backgroundColor);
+	canvas.style.setProperty('background-color', backgroundColor);
 	//convert hex to HSL
 	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
@@ -1413,7 +1410,7 @@ export const rope = ({
 	for (var i = 0; i < center.length; i++) {
 		center[i].style.color = backgroundColor;
 	}
-	document.body.style.setProperty('background-color', backgroundColor);
+	canvas.style.setProperty('background-color', backgroundColor);
 	//convert hex to HSL
 	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
@@ -1533,7 +1530,7 @@ export const carpetPattern = ({
 	for (var i = 0; i < center.length; i++) {
 		center[i].style.color = backgroundColor;
 	}
-	document.body.style.setProperty('background-color', backgroundColor);
+	canvas.style.setProperty('background-color', backgroundColor);
 	//convert hex to HSL
 	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
@@ -1771,7 +1768,7 @@ export const carpetPattern2 = ({
 	for (var i = 0; i < center.length; i++) {
 		center[i].style.color = backgroundColor;
 	}
-	document.body.style.setProperty('background-color', backgroundColor);
+	canvas.style.setProperty('background-color', backgroundColor);
 	//convert hex to HSL
 	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
@@ -1886,7 +1883,7 @@ export const vis8 = ({
 	for (var i = 0; i < center.length; i++) {
 		center[i].style.color = backgroundColor;
 	}
-	document.body.style.setProperty('background-color', backgroundColor);
+	canvas.style.setProperty('background-color', backgroundColor);
 	//convert hex to HSL
 	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
@@ -1938,7 +1935,6 @@ export const vis8 = ({
 	if (relationToCenterX > 1) {
 		offset = 2 - relationToCenterX;
 	}
-	console.log(offset);
 	const randomNumber = random(0, canvas.width / number / 10);
 	for (var i = 0; i < canvas.width / number * 2 + 1; i++) {
 		for (var l = 0; l < canvas.height / number * 2; l++) {
@@ -2018,7 +2014,7 @@ export const carpet2P = ({
 	for (var i = 0; i < center.length; i++) {
 		center[i].style.color = backgroundColor;
 	}
-	document.body.style.setProperty('background-color', backgroundColor);
+	canvas.style.setProperty('background-color', backgroundColor);
 	//convert hex to HSL
 	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
@@ -2057,7 +2053,6 @@ export const carpet2P = ({
 	ctx.lineWidth = ampScale * 1;
 	const ampMult = (canvas.width + canvas.height) / 1000;
 	//try rotating maybe?
-	console.log('canvas.width ' + canvas.width + ' canvas height ' + canvas.height)
 	for (var i = 0; i < canvas.width; i++) {
 		const newPosW = 1.25 + canvas.width - 2.5 * i;
 		const newPos2W = canvas.width - 2.5 * i;
@@ -2120,7 +2115,7 @@ export const carpet4P = ({
 	for (var i = 0; i < center.length; i++) {
 		center[i].style.color = backgroundColor;
 	}
-	document.body.style.setProperty('background-color', backgroundColor);
+	canvas.style.setProperty('background-color', backgroundColor);
 	//convert hex to HSL
 	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
@@ -2161,7 +2156,6 @@ export const carpet4P = ({
 	const multiplier = 600;
 	const divider = ampMult * multiplier * 2;
 	//try rotating maybe?
-	console.log('canvas.width ' + canvas.width + ' canvas height ' + canvas.height)
 	for (var mh = 0; mh < canvas.height / divider; mh++) {
 		for (var mw = 0; mw < canvas.width / divider; mw++) {
 			for (var i = 0; i < canvas.height; i++) {
@@ -2243,7 +2237,7 @@ export const carpetCentre = ({
 	for (var i = 0; i < center.length; i++) {
 		center[i].style.color = backgroundColor;
 	}
-	document.body.style.setProperty('background-color', backgroundColor);
+	canvas.style.setProperty('background-color', backgroundColor);
 	//convert hex to HSL
 	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
@@ -2290,7 +2284,6 @@ export const carpetCentre = ({
 	// console.log(averageToCentre);
 	const divider = 5 / multiplier;
 	ctx.lineWidth = ampScale * multiplier;
-	console.log(divider);
 	for (var i = 0; i < canvas.width / divider; i++) {
 		ctx.strokeStyle = color;
 		ctx.beginPath();
@@ -2355,7 +2348,7 @@ export const carpetCentre2 = ({
 	for (var i = 0; i < center.length; i++) {
 		center[i].style.color = backgroundColor;
 	}
-	document.body.style.setProperty('background-color', backgroundColor);
+	canvas.style.setProperty('background-color', backgroundColor);
 	//convert hex to HSL
 	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
@@ -2504,7 +2497,7 @@ export const carpetCentre4 = ({
 	for (var i = 0; i < center.length; i++) {
 		center[i].style.color = backgroundColor;
 	}
-	document.body.style.setProperty('background-color', backgroundColor);
+	canvas.style.setProperty('background-color', backgroundColor);
 	//convert hex to HSL
 	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
@@ -2651,7 +2644,7 @@ export const carpetCentre3 = ({
 	for (var i = 0; i < center.length; i++) {
 		center[i].style.color = backgroundColor;
 	}
-	document.body.style.setProperty('background-color', backgroundColor);
+	canvas.style.setProperty('background-color', backgroundColor);
 	//convert hex to HSL
 	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
@@ -2700,7 +2693,6 @@ export const carpetCentre3 = ({
 	}
 	const number = Math.floor(100 * multiplier);
 	let divider = number;
-	console.log(number);
 	if (number < 2) {
 		divider = 2;
 	}
@@ -2801,7 +2793,7 @@ export const waveWalls = ({
 	for (var i = 0; i < center.length; i++) {
 		center[i].style.color = backgroundColor;
 	}
-	document.body.style.setProperty('background-color', backgroundColor);
+	canvas.style.setProperty('background-color', backgroundColor);
 	//convert hex to HSL
 	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
@@ -2837,7 +2829,6 @@ export const waveWalls = ({
 	const number = 40;
 	const multiplier = canvas.height / number;
 	const relationToCenterX = newPositionX / centerX;
-	console.log(relationToCenterX);
 	let offset = relationToCenterX;
 	if (relationToCenterX > 1) {
 		offset = Math.abs(2 - relationToCenterX);
@@ -2912,7 +2903,7 @@ export const flowerCircle = ({
 	for (var i = 0; i < center.length; i++) {
 		center[i].style.color = backgroundColor;
 	}
-	document.body.style.setProperty('background-color', backgroundColor);
+	canvas.style.setProperty('background-color', backgroundColor);
 	//convert hex to HSL
 	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);
@@ -3058,7 +3049,7 @@ export const vis6 = ({
 	for (var i = 0; i < center.length; i++) {
 		center[i].style.color = backgroundColor;
 	}
-	document.body.style.setProperty('background-color', backgroundColor);
+	canvas.style.setProperty('background-color', backgroundColor);
 	//convert hex to HSL
 	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);

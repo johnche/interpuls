@@ -396,7 +396,7 @@ export const dot = ({
 	ctx.lineCap = 'round';
 	ctx.lineJoin = 'butt';
 
-	const relationToCenterX = newPositionX / centerX;
+	const relationToCenterX = ((newPositionX / centerX) + (newPositionY/centerY))/2;
 	let offset = relationToCenterX;
 	if (relationToCenterX > 1) {
 		offset = Math.abs(2 - relationToCenterX + 1);
@@ -418,8 +418,8 @@ export const dot = ({
 	const multiplier = Math.abs(100 * offset) * ampScale;
 
 	let divider = multiplier;
-	if (divider < 2) {
-		divider = 2;
+	if (divider < 3) {
+		divider = 3;
 	}
 
 	const multiplierOfDiv = 2;
@@ -918,7 +918,7 @@ export const vis3 = ({
 	mousePosition,
 	centerX,
 	centerY,
-	cache
+	cache,
 }) => {
 	// Set initial values first
 	if (cache === undefined) {
@@ -928,7 +928,9 @@ export const vis3 = ({
 		cache.lastPositionFlippedY = centerY;
 		cache.lastPositionFlippedX = centerX;
 	}
-
+	// console.log(clickPosition);
+	// console.log(mousePosition.x);
+	// console.log(mousePosition.y);
 	const centerRelationX = mousePosition.x - 1;
 	const centerRelationY = mousePosition.y;
 
@@ -989,7 +991,7 @@ export const vis3 = ({
 	const alpha = alphaAmplitude;
 	// document.getElementById('control-style').style.borderColor = colorBox;
 	
-
+	// console.log(newPositionX);
 	ctx.globalAlpha = alpha;
 	ctx.lineCap = 'round';
 	ctx.lineJoin = 'butt';
@@ -1247,17 +1249,17 @@ export const vis7 = ({
 	if (relationToCenterX > 1) {
 		offset = 2 - relationToCenterX;
 	}
-	for (var i = 0; i < canvas.width / number * 2 + 1; i++) {
-		for (var l = 0; l < canvas.height / number * 2 + 1; l++) {
+	for (var i = 0; i < canvas.width / number*2 + 1; i++) {
+		for (var l = 0; l < canvas.height / number*2 + 1; l++) {
 			ctx.strokeStyle = color;
 			ctx.lineWidth = ampScale * multiplier * 0.5;
 			ctx.beginPath();
-			ctx.moveTo(0 + (number * i) + newPositionX, newPositionY + (number * l) - canvas.height + centerY);
-			ctx.lineTo(0 + (number * i) + newPositionX, newPositionY + (number * l) - canvas.height + centerY);
+			ctx.moveTo((number * i) + newPositionX, newPositionY + (number * l) - canvas.height + centerY);
+			ctx.lineTo(0 + (number * i) + newPositionX, newPositionY + (number * l) - canvas.height + centerY+1);
 			ctx.stroke();
 			ctx.strokeStyle = colorShadow;
 			ctx.moveTo(canvas.width - ((number * i) + newPositionX - halfNumber), canvas.height - ((number * l) + newPositionY - halfNumber * 2) + canvas.height - centerY);
-			ctx.lineTo(canvas.width - ((number * i) + newPositionX - halfNumber), canvas.height - ((number * l) + newPositionY - halfNumber * 2) + canvas.height - centerY);
+			ctx.lineTo(canvas.width - ((number * i) + newPositionX - halfNumber), canvas.height - ((number * l) + newPositionY - halfNumber * 2) + canvas.height - centerY+1);
 			ctx.stroke();
 		}
 	}

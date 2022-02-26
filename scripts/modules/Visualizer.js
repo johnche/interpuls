@@ -62,24 +62,27 @@ export default class Visualizer {
 			centerY,
 		};
 
+		
 		htmlElements.styleButton.addEventListener('click', this.updateVisualizer);
 		htmlElements.colorButton.addEventListener('click', this.updateColorTheme);
 		//added button for fullscreen
 		htmlElements.fullscreenButton.addEventListener('click', this.openFullscreen);
 
 		document.addEventListener('keydown', logKey);
-		
+
 		//Id like to update the visualizer as I am in fullscreen with a right arrow.. any ways I could call updateVisualizer()?
 		function logKey(e) {
 			if (e.code == 'ArrowRight') {
+				console.log('hello');
+
 				//update visualizer?
 			}
 		}
-
+		console.log(isTouchUnit);
 
 		if (isTouchUnit) {
-			document.addEventListener('touchmove', this.handleT);
-			document.addEventListener('touchstart', this.handleGlobalClick);
+			document.addEventListener('touchmove', this.handleTouchMoveEvent);
+			document.addEventListener('touchstart', this.handleTapEvent);
 		}
 		else {
 			document.addEventListener('mousemove', this.handleMoveEvent);
@@ -91,10 +94,14 @@ export default class Visualizer {
 		const canvas = document.getElementById('audio_visual');
 		if (canvas.requestFullscreen) {
 			canvas.requestFullscreen();
-		} else if (canvas.webkitRequestFullscreen) { /* Safari */
-			canvas.webkitRequestFullscreen();
 		} else if (canvas.msRequestFullscreen) { /* IE11 */
 			canvas.msRequestFullscreen();
+		}else if (canvas.mozRequestFullScreen) {
+			canvas.mozRequestFullScreen();
+		} else if (canvas.msRequestFullscreen) {
+			canvas.msRequestFullscreen();
+		} else if (canvas.webkitEnterFullscreen) {
+			canvas.webkitEnterFullscreen(); //for iphone this code worked
 		}
 		canvas.style.cursor = 'none';
 	};
@@ -108,6 +115,7 @@ export default class Visualizer {
 		e.preventDefault();
 		this.visualizerContext.mousePosition.x = e.touches[0].pageX;
 		this.visualizerContext.mousePosition.y = e.touches[0].pageY;
+		console.log('move');
 	};
 
 	handleClickEvent = (e) => {

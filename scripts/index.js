@@ -70,7 +70,7 @@ const main = async () => {
 	const h = document.documentElement.clientHeight;
 	const buttonWRatio = 0.15;
 	const buttonW = w * buttonWRatio;
-	const buttonHRatio = 0.03;
+	const buttonHRatio = 0.075;
 	const buttonH = h * buttonHRatio;
 	document.getElementById('control-style').style.width = buttonW + 'px';
 	document.getElementById('control-style').style.height = buttonH + 'px';

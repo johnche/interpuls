@@ -19,16 +19,15 @@ body {
 	font-family: 'Verdana';
 	text-align: center;
 	top: 98vh;
-
 	width: 100vw;
-	/* background-color: rgba(0,0,0,0.1); */
 	display: flex;
 	justify-content: center;
 	flex-direction: column;
+	background-color: #da5f05;
 }
 #textContainer > p {
 	margin-bottom:15px;
-	margin-top:25px;
+	margin-top:15px;
 	color:aliceblue;
 }
 #textContainer > smallText{
@@ -37,22 +36,66 @@ body {
 	color:aliceblue;
 }
 #textContainer > mediumText{
-	margin-top:15px;
-	margin-bottom:25px;
+	margin-top:2.5px;
+	margin-bottom:20;
 	color:aliceblue;
 }
+
+#fullscreen-button {
+	position: absolute;
+	bottom: 3vh;
+	right: 2vh;
+	z-index: 999;
+	color: rgba(255,255,255,0.25);
+	background-color : rgba(0,0,0,0.2);
+	border-color : rgba(255,255,255,0.0);
+}
+#fullscreen-button>button {
+	color: rgba(255,255,255,0.25);
+	background-color : rgba(0,0,0,0.2);
+	border-color : rgba(255,255,255,0.0);
+}
+
+#fullscreen-button >button:hover{
+	color: rgba(255,255,255,0.75);
+	background-color : rgba(0,0,0,0.2);
+	border-color : rgba(255,255,255,0.4);
+}
+
+#fullscreen-button>button:active{
+	color: rgba(255,255,255,1);
+	background-color : rgba(0,0,0,0.2);
+	border-color : rgba(255,255,255,1);
+}
+
 #control-buttons {
 	position: absolute;
 	top: 2vh;
 	right: 2vh;
 	z-index: 999;
 }
+#control-buttons >button{
+	color: rgba(255,255,255,0.25);
+	background-color : rgba(0,0,0,0.2);
+	border-color : rgba(255,255,255,0.0);
+}
+
+#control-buttons >button:hover{
+	color: rgba(255,255,255,0.75);
+	background-color : rgba(0,0,0,0.2);
+	border-color : rgba(255,255,255,0.4);
+}
+
+#control-buttons >button:active{
+	color: rgba(255,255,255,1);
+	background-color : rgba(0,0,0,0.2);
+	border-color : rgba(255,255,255,1);
+}
 
 canvas {
 	position: absolute;
 	top: 0;
 	left: 0;
-
 	-webkit-touch-callout:none;
 	-webkit-user-select:none;
 	-khtml-user-select:none;

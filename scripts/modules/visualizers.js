@@ -362,6 +362,7 @@ export const dot = ({
 	const amplitude = Math.max(...frequencyBuffer);
 	//scale amplitude
 	const ampScale = amplitude * (1 / 255);
+
 	//filter out noise
 	let filter = 1;
 	let alphaAmplitude = 0;
@@ -983,8 +984,11 @@ export const vis3 = ({
 	const colorBackgroundShadow = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackgroundShadow})`;
 	const colorBackground2 = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackground})`;
 	const colorBackgroundShadow2 = `hsl(${hsla[0] + (Math.round(360 * normalizedFrequency) * 10)}, ${colorS}, ${colorLBackgroundShadow})`;
-
+	
+	// document.getElementById('control-style').style.width = colorBox;
 	const alpha = alphaAmplitude;
+	// document.getElementById('control-style').style.borderColor = colorBox;
+	
 
 	ctx.globalAlpha = alpha;
 	ctx.lineCap = 'round';

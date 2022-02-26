@@ -43,16 +43,16 @@ export default class Visualizer {
 		const { colorList, background } = this.colorThemeIterator.next().value;
 		this.currentColorsIterator = getIterator(colorList, true);
 
-		const centerX = canvas.width/2;
-		const centerY = canvas.height/2;
+		const centerX = canvas.width / 2;
+		const centerY = canvas.height / 2;
 		this.visualizerContext = {
 			canvas,
 			frequencyBuffer,
 			samplesBuffer,
 			analyser,
 			ctx: canvas.getContext("2d"),
-			frequencyWidth: canvas.width/frequencyBuffer.length,
-			samplesWidth: canvas.width/samplesBuffer.length,
+			frequencyWidth: canvas.width / frequencyBuffer.length,
+			samplesWidth: canvas.width / samplesBuffer.length,
 			themeColor: this.currentColorsIterator.next().value,
 			currentColorList: this.colorThemeIterator.next().value,
 			backgroundColor: background,
@@ -64,6 +64,18 @@ export default class Visualizer {
 
 		htmlElements.styleButton.addEventListener('click', this.updateVisualizer);
 		htmlElements.colorButton.addEventListener('click', this.updateColorTheme);
+		//added button for fullscreen
+		htmlElements.fullscreenButton.addEventListener('click', this.openFullscreen);
+
+		document.addEventListener('keydown', logKey);
+		
+		//Id like to update the visualizer as I am in fullscreen with a right arrow.. any ways I could call updateVisualizer()?
+		function logKey(e) {
+			if (e.code == 'ArrowRight') {
+				//update visualizer?
+			}
+		}
+
 
 		if (isTouchUnit) {
 			document.addEventListener('touchmove', this.handleT);
@@ -74,6 +86,18 @@ export default class Visualizer {
 			document.addEventListener('click', this.handleClickEvent);
 		}
 	}
+
+	openFullscreen = () => {
+		const canvas = document.getElementById('audio_visual');
+		if (canvas.requestFullscreen) {
+			canvas.requestFullscreen();
+		} else if (canvas.webkitRequestFullscreen) { /* Safari */
+			canvas.webkitRequestFullscreen();
+		} else if (canvas.msRequestFullscreen) { /* IE11 */
+			canvas.msRequestFullscreen();
+		}
+		canvas.style.cursor = 'none';
+	};
 
 	handleMoveEvent = (e) => {
 		this.visualizerContext.mousePosition.x = e.clientX;
@@ -106,7 +130,6 @@ export default class Visualizer {
 
 	updateVisualizer = () => {
 		this.visualizer = this.visualizerIterator.next().value;
-
 		// Clear visualizer "local" cache
 		this.visualizerContext.cache = undefined;
 	};
@@ -129,7 +152,7 @@ export default class Visualizer {
 		};
 	};
 
-	clear = ({ctx, canvas}) => {
+	clear = ({ ctx, canvas }) => {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 	};
 

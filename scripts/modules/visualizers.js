@@ -1645,7 +1645,7 @@ export const carpetPattern3 = ({
 	for (var i = 0; i < center.length; i++) {
 		center[i].style.color = backgroundColor;
 	}
-	document.body.style.setProperty('background-color', backgroundColor);
+	canvas.style.setProperty('background-color', backgroundColor);
 	//convert hex to HSL
 	const hsla = hexToHSL(themeColor);
 	const amplitude = Math.max(...frequencyBuffer);

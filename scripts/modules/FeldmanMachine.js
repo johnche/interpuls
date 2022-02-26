@@ -34,7 +34,6 @@ export default class FeldmanMachine {
 		this._progressBar = htmlElements.progressBar;
 		this._progressAnimationid = window.requestAnimationFrame(this.progressBarLoop);
 
-		//(new Howl({src: 'assets/phantom.ogg'})).play();
 		// Howler creates AudioContext after sound is played
 		this.playSound();
 		this._analyser = Howler.ctx.createAnalyser();

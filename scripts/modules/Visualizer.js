@@ -11,7 +11,7 @@ import {
 	carpetCentre3,
 	vis1,
 } from "./visualizers.js";
-import { getIterator, indexOfMax, shuffleArray } from "./utils.js";
+import { isTouchUnit, getIterator, indexOfMax, shuffleArray } from "./utils.js";
 import { colors } from "../lib/colors.js";
 
 export default class Visualizer {
@@ -24,7 +24,19 @@ export default class Visualizer {
 		const frequencyBuffer = new Uint8Array(analyser.frequencyBinCount);
 		const samplesBuffer = new Uint8Array(analyser.fftSize);
 
-		this.visualizerIterator = getIterator([vis3, vis5,vis7,carpetPattern,carpetPattern3,rope,carpet2P, carpet4P,dot,carpetCentre3], true);
+		this.visualizerIterator = getIterator([
+			vis3,
+			vis5,
+			vis7,
+			carpetPattern,
+			carpetPattern3,
+			rope,
+			carpet2P,
+			carpet4P,
+			dot,
+			carpetCentre3
+		], true);
+
 		this.visualizer = this.visualizerIterator.next().value;
 		this.colorThemeIterator = getIterator(shuffleArray([...colors]), true);
 		const { colorList, background } = this.colorThemeIterator.next().value;
@@ -51,18 +63,37 @@ export default class Visualizer {
 
 		htmlElements.styleButton.addEventListener('click', this.updateVisualizer);
 		htmlElements.colorButton.addEventListener('click', this.updateColorTheme);
-		document.addEventListener('mousemove', this.handleMouseEvent);
-		document.addEventListener('click', this.handleGlobalClick);
+
+		if (isTouchUnit) {
+			document.addEventListener('touchmove', this.handleT);
+			document.addEventListener('touchstart', this.handleGlobalClick);
+		}
+		else {
+			document.addEventListener('mousemove', this.handleMoveEvent);
+			document.addEventListener('click', this.handleClickEvent);
+		}
 	}
 
-	handleMouseEvent = (e) => {
+	handleMoveEvent = (e) => {
 		this.visualizerContext.mousePosition.x = e.clientX;
 		this.visualizerContext.mousePosition.y = e.clientY;
 	};
 
-	handleGlobalClick = (e) => {
+	handleTouchMoveEvent = (e) => {
+		e.preventDefault();
+		this.visualizerContext.mousePosition.x = e.touches[0].pageX;
+		this.visualizerContext.mousePosition.y = e.touches[0].pageY;
+	};
+
+	handleClickEvent = (e) => {
 		this.visualizerContext.clickPosition.x = e.clientX;
 		this.visualizerContext.clickPosition.y = e.clientY;
+	};
+
+	handleTapEvent = (e) => {
+		e.preventDefault();
+		this.visualizerContext.clickPosition.x = e.touches[0].pageX;
+		this.visualizerContext.clickPosition.y = e.touches[0].pageY;
 	};
 
 	visualizerLoop = () => {

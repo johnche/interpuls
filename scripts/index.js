@@ -1,5 +1,6 @@
 import FeldmanMachine from './modules/FeldmanMachine.js';
 import MediaHelper from './modules/MediaHelper.js';
+import { isTouchUnit } from './modules/utils.js';
 
 const main = async () => {
 	const canvas = document.createElement('canvas');
@@ -21,7 +22,7 @@ const main = async () => {
 
 	const feldmanMachine = new FeldmanMachine(htmlElements, mediaHelper);
 
-	const onClick = 'ontouchstart' in window ? 'touchstart' : 'click';
+	const onClick = isTouchUnit ? 'touchstart' : 'click';
 	document.body.addEventListener(onClick, feldmanMachine.click, true);
 };
 

@@ -1,3 +1,5 @@
+export const isTouchUnit = 'ontouchstart' in window;
+
 export const asyncForEach = async (l, cb) => {
 	for (let i = 0; i < l.length; i++) {
 		await cb(l[i], i, l);
